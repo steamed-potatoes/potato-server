@@ -1,4 +1,10 @@
-import { Body, JsonController, Post } from 'routing-controllers';
+import {
+  Body,
+  CurrentUser,
+  Get,
+  JsonController,
+  Post,
+} from 'routing-controllers';
 import { Service } from 'typedi';
 import { ApiResponse } from '@src/common/dto/api.response.dto';
 import { CreateAccountRequest } from '@src/services/member/dto/member.request.dto';
@@ -13,7 +19,13 @@ export class MemberController {
   public async createAccount(
     @Body() request: CreateAccountRequest
   ): Promise<ApiResponse<string>> {
-    await this.memberService.createAccount(request);
-    return ApiResponse.success();
+    const token = await this.memberService.createAccount(request);
+    return ApiResponse.success(token);
+  }
+
+  @Get('/api/v1/member')
+  public async getMemberInfo(@CurrentUser() memberId: number) {
+    const response = await this.memberService.getMemberInfo(memberId);
+    return ApiResponse.success(response);
   }
 }

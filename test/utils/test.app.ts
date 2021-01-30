@@ -6,6 +6,7 @@ import {
   useContainer as routingUseContainer,
   useExpressServer,
 } from 'routing-controllers';
+import { routingControllerOptions } from '../../src/config/routing';
 
 routingUseContainer(Container);
 const app = express();
@@ -14,14 +15,7 @@ function setExpress() {
   app.use(bodyParser.json());
   app.use(bodyParser.urlencoded({ extended: false }));
 
-  useExpressServer(app, {
-    defaultErrorHandler: false,
-    controllers: [
-      `${__dirname}/../../src/controllers/*.controller{.ts,.js}`,
-      `${__dirname}/../../src/controllers/*/*.controller{.ts,.js}`,
-    ],
-    middlewares: [`${__dirname}/../../src/middlewares/*{.ts,.js}`],
-  });
+  useExpressServer(app, routingControllerOptions);
 }
 
 setExpress();

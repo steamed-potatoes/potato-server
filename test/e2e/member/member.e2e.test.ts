@@ -50,4 +50,20 @@ describe('MemberServiceTest', () => {
         .expect(400);
     });
   });
+
+  describe('GET /api/v1/member', () => {
+    test('토큰을 넘기지 않으면 401 Unauthorzied', async () => {
+      await request(app)
+        .get('/api/v1/member')
+        .set('Authorization', '')
+        .expect(401);
+    });
+
+    test('잘못된 토큰을 넘기면 401 Unauthorzied', async () => {
+      await request(app)
+        .get('/api/v1/member')
+        .set('Authorization', 'Wrong Token')
+        .expect(401);
+    });
+  });
 });
