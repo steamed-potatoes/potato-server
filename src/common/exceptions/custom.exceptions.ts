@@ -1,4 +1,4 @@
-import { BaseException } from './base.exception';
+import { BaseException } from '@src/common/exceptions/base.exception';
 /**
  * Custom Exception
  */

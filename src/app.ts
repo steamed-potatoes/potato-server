@@ -6,10 +6,10 @@ import {
   useExpressServer,
   useContainer as routingUseContainer,
 } from 'routing-controllers';
-import createDatabaseConnection from './config/database';
-import { routingControllerOptions } from './config/routing';
-import { useSwagger } from './config/swagger';
-import logger from 'morgan';
+import createDatabaseConnection from '@src/config/database';
+import { routingControllerOptions } from '@src/config/routing';
+import { useSwagger } from '@src/config/swagger';
+import logger from '@src/config/logger';
 
 export default class App {
   private app: express.Application;
@@ -31,7 +31,6 @@ export default class App {
   private setUpMiddleWares(): void {
     this.app.use(bodyParser.json());
     this.app.use(bodyParser.urlencoded({ extended: false }));
-    this.app.use(logger('dev'));
   }
 
   public async runServer(port: number): Promise<void> {

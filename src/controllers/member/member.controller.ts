@@ -1,8 +1,8 @@
 import { Body, JsonController, Post } from 'routing-controllers';
 import { Service } from 'typedi';
-import { ApiResponse } from '../../common/dto/api.response.dto';
-import { CreateAccountRequest } from '../../services/member/dto/member.request.dto';
-import { MemberService } from '../../services/member/member.service';
+import { ApiResponse } from '@src/common/dto/api.response.dto';
+import { CreateAccountRequest } from '@src/services/member/dto/member.request.dto';
+import { MemberService } from '@src/services/member/member.service';
 
 @Service()
 @JsonController()

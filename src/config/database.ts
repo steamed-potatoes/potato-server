@@ -1,7 +1,7 @@
 import Container from 'typedi';
 import { getConnectionOptions, createConnection, useContainer } from 'typeorm';
 import config from './index';
-import logger from 'morgan';
+import logger from '@src/config/logger';
 
 export default async function createDatabaseConnection() {
   try {

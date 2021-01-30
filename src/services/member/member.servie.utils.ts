@@ -1,6 +1,6 @@
 import { Repository } from 'typeorm';
-import { ConflictException } from '../../common/exceptions/custom.exceptions';
-import { Member } from '../../domains/member/member.entity';
+import { ConflictException } from '@src/common/exceptions/custom.exceptions';
+import { Member } from '@src/domains/member/member.entity';
 
 export class MemberServiceUtils {
   public static async validateNonExistMember(

@@ -4,7 +4,7 @@ import { getMetadataArgsStorage } from 'routing-controllers';
 import { routingControllersToSpec } from 'routing-controllers-openapi';
 import { getFromContainer, MetadataStorage } from 'class-validator';
 import { validationMetadatasToSchemas } from 'class-validator-jsonschema';
-import { routingControllerOptions } from './routing';
+import { routingControllerOptions } from '@src/config/routing';
 
 export function useSwagger(app: express.Application) {
   const metadatas = (getFromContainer(MetadataStorage) as any)

@@ -1,6 +1,6 @@
-import App from './app';
-import config from './config';
-import logger from 'morgan';
+import App from '@src/app';
+import config from '@src/config';
+import logger from '@src/config/logger';
 
 try {
   const app = new App();

@@ -1,9 +1,9 @@
 import { Service } from 'typedi';
 import { Repository } from 'typeorm';
 import { InjectRepository } from 'typeorm-typedi-extensions';
-import { Member } from '../../domains/member/member.entity';
-import { CreateAccountRequest } from './dto/member.request.dto';
-import { MemberServiceUtils } from './member.servie.utils';
+import { Member } from '@src/domains/member/member.entity';
+import { CreateAccountRequest } from '@src/services/member/dto/member.request.dto';
+import { MemberServiceUtils } from '@src/services/member/member.servie.utils';
 
 @Service()
 export class MemberService {

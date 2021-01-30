@@ -1,5 +1,5 @@
-import { ApiResponse } from '../dto/api.response.dto';
 import { HttpError } from 'routing-controllers';
+import { ApiResponse } from '@src/common/dto/api.response.dto';
 
 export abstract class BaseException extends HttpError {
   constructor(status: number, name: string, message: string) {

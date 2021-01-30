@@ -1,5 +1,5 @@
 import { IsEmail, IsOptional, IsString, IsUrl } from 'class-validator';
-import { Member } from '../../../domains/member/member.entity';
+import { Member } from '@src/domains/member/member.entity';
 
 export class CreateAccountRequest {
   @IsEmail({}, { message: '이메일을 다시 확인해주세요.' })
