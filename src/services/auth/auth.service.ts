@@ -38,9 +38,4 @@ export default class AuthService {
     const token = JwtTokenUtils.encodeToken(member.getId());
     return GoogleAuthResponse.login(token);
   }
-
-  public async getMemberInfo(memberId: number): Promise<MemberInfoResponse> {
-    const member = await this.memberRepository.findOne(memberId);
-    return MemberInfoResponse.of(member);
-  }
 }

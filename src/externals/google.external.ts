@@ -22,7 +22,7 @@ export class GoogleApiCallerImpl implements GoogleApiCaller {
   }
 
   private async getGoogleAccessToken(code: string, redirectUri: string) {
-    return await axios.post('http://oauth2.googleapis.com/token', {
+    return await axios.post('https://oauth2.googleapis.com/token', {
       client_id: config.google.client_id,
       client_secret: config.google.client_secret,
       grant_type: config.google.grant_type,

@@ -24,12 +24,4 @@ export default class AuthController {
       await this.authService.handleGoogleAuthentication(request)
     );
   }
-
-  @Get('/api/v1/user')
-  public async getMemberInfo(
-    @CurrentUser() userId: number
-  ): Promise<ApiResponse<MemberInfoResponse>> {
-    const response = await this.authService.getMemberInfo(userId);
-    return ApiResponse.success(response);
-  }
 }

@@ -28,6 +28,9 @@ const config = {
     client_secret: process.env.GOOGLE_CLIENT_SECRET,
     grant_type: process.env.GOOGLE_GRANT_TYPE,
   },
+  session: {
+    secretKey: process.env.COOKIE_SECRET,
+  },
 };
 
 export default config;
