@@ -18,7 +18,7 @@ export class CustomErrorHandler implements ExpressErrorMiddlewareInterface {
   ) {
     let responseObject = {} as any;
 
-    // class-validator custom Handler
+    // 입력값 에러 대응
     if (error instanceof BadRequestError) {
       res.status(400);
       responseObject.statusCode = 400;
@@ -26,7 +26,6 @@ export class CustomErrorHandler implements ExpressErrorMiddlewareInterface {
       responseObject.message =
         Object.values(error['errors'][0]['constraints'])[0] || null;
     } else {
-      // set http status
       if (error instanceof HttpError && error.httpCode) {
         res.status(error.httpCode);
       } else {
@@ -48,8 +47,8 @@ export class CustomErrorHandler implements ExpressErrorMiddlewareInterface {
       }
     }
 
-    // 로깅
-    // console.error(error);
+    // TODO 로깅으로 변경
+    console.error(error);
     res.json(responseObject);
   }
 }
