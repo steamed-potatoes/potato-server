@@ -6,7 +6,8 @@ on:
       - develop
 
 jobs:
-  build:
+  test:
+    name: Testing
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -26,3 +27,9 @@ jobs:
 
       - name: Jest test
         run: yarn test
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v1
+        with:
+          name: potato-server
+          fail_ci_if_error: true
