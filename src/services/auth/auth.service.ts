@@ -7,7 +7,6 @@ import { GoogleApiCallerImpl } from '@src/externals/google.external';
 import { Repository } from 'typeorm';
 import { GoogleAuthRequest } from './dto/google.auth.request.dto';
 import { GoogleAuthResponse } from './dto/google.auth.response.dto';
-import { MemberInfoResponse } from '@src/services/auth/dto/member.response.dto';
 
 @Service()
 export default class AuthService {
