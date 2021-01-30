@@ -5,11 +5,11 @@ import { Container } from 'typedi';
 import {
   useExpressServer,
   useContainer as routingUseContainer,
-  createExpressServer,
 } from 'routing-controllers';
 import createDatabaseConnection from './config/database';
 import { routingControllerOptions } from './config/routing';
 import { useSwagger } from './config/swagger';
+import logger from 'morgan';
 
 export default class App {
   private app: express.Application;
@@ -31,6 +31,7 @@ export default class App {
   private setUpMiddleWares(): void {
     this.app.use(bodyParser.json());
     this.app.use(bodyParser.urlencoded({ extended: false }));
+    this.app.use(logger('dev'));
   }
 
   public async runServer(port: number): Promise<void> {
@@ -46,7 +47,7 @@ export default class App {
           `);
       });
     } catch (error) {
-      console.error(error);
+      logger.error(error);
     }
   }
 }
