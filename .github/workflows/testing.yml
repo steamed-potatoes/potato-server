@@ -4,12 +4,10 @@ on:
   pull_request:
     branches:
       - develop
-  push:
-    branches:
-      - feature/coverage
 
 jobs:
-  build:
+  test:
+    name: Testing
     runs-on: ubuntu-latest
     strategy:
       matrix:
