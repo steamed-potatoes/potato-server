@@ -9,12 +9,20 @@ import { routingControllerOptions } from '@src/config/routing';
 export function useSwagger(app: express.Application) {
   const metadatas = (getFromContainer(MetadataStorage) as any)
     .validationMetadatas;
+
   const schemas = validationMetadatasToSchemas(metadatas);
 
   const storage = getMetadataArgsStorage();
   const spec = routingControllersToSpec(storage, routingControllerOptions, {
     components: {
       schemas,
+      securitySchemes: {
+        BearerAuth: {
+          type: 'http',
+          scheme: 'bearer',
+          bearerFormat: 'JWT',
+        },
+      },
     },
     info: {
       title: 'Potato API Server',
