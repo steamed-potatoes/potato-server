@@ -1,5 +1,5 @@
 import { Column, Entity } from 'typeorm';
-import { CoreEntity } from '@src/domains/base.entity';
+import { CoreEntity } from '@src/domains/core.entity';
 
 @Entity()
 export class Member extends CoreEntity {

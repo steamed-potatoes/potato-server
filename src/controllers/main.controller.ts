@@ -7,6 +7,6 @@ import { ApiResponse } from '@src/common/dto/api.response.dto';
 export class MainController {
   @Get('/ping')
   public ping(): ApiResponse<string> {
-    return ApiResponse.success('pong');
+    return ApiResponse.success();
   }
 }

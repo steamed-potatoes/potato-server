@@ -11,7 +11,7 @@ export class ApiResponse<T> {
     this.data = data;
   }
 
-  public static success(data: any) {
+  public static success(data: any = 'OK') {
     return new ApiResponse(200, null, null, data);
   }
 

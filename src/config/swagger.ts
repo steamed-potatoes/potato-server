@@ -17,8 +17,8 @@ export function useSwagger(app: express.Application) {
       schemas,
     },
     info: {
-      title: 'Potato Diary',
-      description: 'Potato Diary API',
+      title: 'Potato API Server',
+      description: 'Potato API Description',
       version: '0.0.1',
     },
   });
