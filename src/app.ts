@@ -1,5 +1,13 @@
+import 'reflect-metadata';
 import express from 'express';
+import bodyParser from 'body-parser';
+import { Container } from 'typedi';
+import {
+  useExpressServer,
+  useContainer as routingUseContainer,
+} from 'routing-controllers';
 import createDatabaseConnection from './config/database';
+import { routingControllerOptions } from './config/routing';
 
 export default class App {
   private app: express.Application;
@@ -7,6 +15,7 @@ export default class App {
   constructor() {
     this.app = express();
     this.setUpDataBase();
+    this.setUpMiddleWares();
   }
 
   private async setUpDataBase(): Promise<void> {
@@ -17,7 +26,14 @@ export default class App {
     }
   }
 
+  private setUpMiddleWares(): void {
+    this.app.use(bodyParser.json());
+    this.app.use(bodyParser.urlencoded({ extended: false }));
+  }
+
   public async runServer(port: number): Promise<void> {
+    routingUseContainer(Container);
+    useExpressServer(this.app, routingControllerOptions);
     try {
       this.app.listen(port, () => {
         console.log(`
