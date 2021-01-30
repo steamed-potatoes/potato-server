@@ -1,10 +1,10 @@
-import { IsString, IsUrl } from 'class-validator';
+import { IsString } from 'class-validator';
 
 export class GoogleAuthRequest {
   @IsString()
   private code: string;
 
-  @IsUrl()
+  @IsString()
   private redirectUri: string;
 
   public getCode(): string {
