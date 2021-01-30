@@ -1,6 +1,8 @@
-import { createConnection, Connection } from 'typeorm';
+import Container from 'typedi';
+import { createConnection, Connection, useContainer } from 'typeorm';
 
 export default async (): Promise<Connection> => {
+  useContainer(Container);
   try {
     return await createConnection({
       name: 'default',

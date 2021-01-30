@@ -7,6 +7,7 @@ import {
 import * as express from 'express';
 import { Service } from 'typedi';
 import logger from '@src/config/logger';
+import config from '@src/config';
 
 @Middleware({ type: 'after' })
 @Service()
@@ -47,7 +48,9 @@ export class CustomErrorHandler implements ExpressErrorMiddlewareInterface {
         responseObject.message = error;
       }
     }
-    logger.error(error);
+    if (config.server.env !== 'test') {
+      logger.error(error);
+    }
     res.json(responseObject);
   }
 }

@@ -18,6 +18,7 @@ export class CreateAccountRequest {
     this.profileUrl = profileUrl;
   }
 
+  // 테스트 코드에서 사용되는 정적 팩토리 메소드
   public static testInstance(email: string, name: string, profileUrl: string) {
     return new CreateAccountRequest(email, name, profileUrl);
   }

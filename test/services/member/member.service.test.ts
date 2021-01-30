@@ -1,10 +1,10 @@
 import { Connection, Repository } from 'typeorm';
-import setUpDatabase from '../utils/db.connection';
-import { Member } from '../../src/domains/member/member.entity';
-import { MemberService } from '../../src/services/member/member.service';
-import { CreateAccountRequest } from '../../src/services/member/dto/member.request.dto';
-import { MemberCreator } from '../../src/domains/member/member.creator';
-import { BaseException } from '../../src/common/exceptions/base.exception';
+import setUpDatabase from '../../utils/db.connection';
+import { Member } from '../../../src/domains/member/member.entity';
+import { MemberService } from '../../../src/services/member/member.service';
+import { CreateAccountRequest } from '../../../src/services/member/dto/member.request.dto';
+import { MemberCreator } from '../../../src/domains/member/member.creator';
+import { BaseException } from '../../../src/common/exceptions/base.exception';
 
 describe('MemberServiceTest', () => {
   let connection: Connection;
@@ -21,8 +21,8 @@ describe('MemberServiceTest', () => {
     connection.close();
   });
 
-  describe('회원가입 기능 테스트', () => {
-    test('새로운 멤버가 저장된다', async () => {
+  describe('createAccount()', () => {
+    test('회원가입시, 새로운 멤버가 저장된다', async () => {
       // given
       const email = 'will.seungho@gmail.com';
       const name = '강승호';
@@ -41,7 +41,7 @@ describe('MemberServiceTest', () => {
       expect(members[0].getProfileUrl()).toEqual(profileUrl);
     });
 
-    test('이미 해당하는 이메일의 멤버가 있는 경우 ConflictException이 발생한다', async () => {
+    test('회원가입시, 이미 해당하는 이메일의 멤버가 있는 경우 ConflictException이 발생한다', async () => {
       // given
       const email = 'will.seungho@gmail.com';
       await memberRepository.save(MemberCreator.create(email));
