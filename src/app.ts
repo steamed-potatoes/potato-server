@@ -9,6 +9,7 @@ import {
 } from 'routing-controllers';
 import createDatabaseConnection from './config/database';
 import { routingControllerOptions } from './config/routing';
+import { useSwagger } from './config/swagger';
 
 export default class App {
   private app: express.Application;
@@ -36,14 +37,13 @@ export default class App {
     try {
       routingUseContainer(Container);
       useExpressServer(this.app, routingControllerOptions);
-      createExpressServer({
-        defaultErrorHandler: false,
-      }).listen(port, () => {
+      useSwagger(this.app);
+      this.app.listen(port, () => {
         console.log(`
-        ################################################
-        🛡️  Server listening on port: ${port} - ${process.env.NODE_ENV}
-        ################################################
-        `);
+          ################################################
+          🛡️  Server listening on port: ${port} - ${process.env.NODE_ENV}
+          ################################################
+          `);
       });
     } catch (error) {
       console.error(error);

@@ -1,15 +1,15 @@
-import { IsOptional, IsString } from 'class-validator';
+import { IsEmail, IsOptional, IsString, IsUrl } from 'class-validator';
 import { Member } from '../../../domains/member/member.entity';
 
 export class CreateAccountRequest {
-  @IsString()
+  @IsEmail({}, { message: '이메일을 다시 확인해주세요.' })
   private readonly email: string;
 
-  @IsString()
+  @IsString({ message: '이름을 다시 확인해주세요.' })
   private readonly name: string;
 
-  @IsString()
   @IsOptional()
+  @IsUrl({}, { message: '프로필 사진을 다시 확인해주세요.' })
   private readonly profileUrl: string;
 
   constructor(email: string, name: string, profileUrl: string) {
