@@ -32,9 +32,9 @@ export default class App {
   }
 
   public async runServer(port: number): Promise<void> {
-    routingUseContainer(Container);
-    useExpressServer(this.app, routingControllerOptions);
     try {
+      routingUseContainer(Container);
+      useExpressServer(this.app, routingControllerOptions);
       this.app.listen(port, () => {
         console.log(`
               ################################################

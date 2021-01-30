@@ -9,7 +9,7 @@ export default [
     username: config.database.username,
     password: config.database.password,
     database: config.database.database,
-    entities: ['src/domains/*/*.entity{.ts,.js}'],
+    entities: ['./src/domains/*/*.entity{.ts,.js}'],
     synchronize: true,
     logging: true,
   },

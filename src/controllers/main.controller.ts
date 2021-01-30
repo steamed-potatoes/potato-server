@@ -1,5 +1,5 @@
 import { Get, JsonController } from 'routing-controllers';
-import { ApiResponse } from '../common/api.response.dto';
+import { ApiResponse } from '../common/dto/api.response.dto';
 import { Service } from 'typedi';
 
 @Service()

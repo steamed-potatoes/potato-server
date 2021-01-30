@@ -19,7 +19,7 @@ export class ApiResponse<T> {
     status: number,
     error: string,
     message: string,
-    data: any,
+    data: any
   ) {
     return new ApiResponse(status, error, message, data);
   }

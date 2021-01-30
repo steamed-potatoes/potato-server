@@ -2,7 +2,7 @@ import { Column, Entity } from 'typeorm';
 import { CoreEntity } from '../base.entity';
 
 @Entity()
-export class User extends CoreEntity {
+export class Member extends CoreEntity {
   @Column({ nullable: false })
   private email: string;
 
@@ -17,6 +17,14 @@ export class User extends CoreEntity {
     this.email = email;
     this.name = name;
     this.profileUrl = profileUrl;
+  }
+
+  public static newInstance(
+    email: string,
+    name: string,
+    profileUrl: string
+  ): Member {
+    return new Member(email, name, profileUrl);
   }
 
   public getEmail(): string {

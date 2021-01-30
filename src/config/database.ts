@@ -1,6 +1,5 @@
-import { useContainer } from 'class-validator';
 import Container from 'typedi';
-import { getConnectionOptions, createConnection } from 'typeorm';
+import { getConnectionOptions, createConnection, useContainer } from 'typeorm';
 import config from './index';
 
 export default async function createDatabaseConnection() {
