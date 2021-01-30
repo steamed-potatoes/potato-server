@@ -4,7 +4,8 @@ import { InjectRepository } from 'typeorm-typedi-extensions';
 import { Member } from '@src/domains/member/member.entity';
 import { CreateAccountRequest } from '@src/services/member/dto/member.request.dto';
 import { MemberServiceUtils } from '@src/services/member/member.servie.utils';
-import JwtTokenUtils from '@src/common/utils/jwt/jwt.utils';
+import { JwtTokenUtils } from '@src/common/utils/jwt/jwt.utils';
+import { MemberInfoResponse } from './dto/member.response.dto';
 
 @Service()
 export class MemberService {
@@ -20,5 +21,13 @@ export class MemberService {
     );
     const member = await this.memberRepository.save(request.toEntity());
     return JwtTokenUtils.encodeToken(member.getId());
+  }
+
+  public async getMemberInfo(memberId: number): Promise<MemberInfoResponse> {
+    const findMember = await MemberServiceUtils.findMemberById(
+      this.memberRepository,
+      memberId
+    );
+    return MemberInfoResponse.of(findMember);
   }
 }

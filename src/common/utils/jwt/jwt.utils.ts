@@ -9,7 +9,7 @@ interface UserToken {
   iss: string;
 }
 
-export default class JwtTokenUtils {
+export class JwtTokenUtils {
   public static encodeToken(memberId: number): string {
     return jwt.sign(
       {

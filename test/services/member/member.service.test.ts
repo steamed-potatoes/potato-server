@@ -60,4 +60,36 @@ describe('MemberServiceTest', () => {
       }
     });
   });
+
+  describe('getMemberInfo()', () => {
+    test('나의 멤버 정보를 가져온다', async () => {
+      // given
+      const email = 'will.seungho@gmail.com';
+      const name = '강승호';
+      const profileUrl = 'http://profile.com';
+      await memberRepository.save(
+        MemberCreator.create(email, name, profileUrl)
+      );
+
+      // when
+      const response = await memberService.getMemberInfo(1);
+
+      // then
+      expect(response.getId()).toEqual(1);
+      expect(response.getEmail()).toEqual(email);
+      expect(response.getName()).toEqual(name);
+      expect(response.getProfileUrl()).toEqual(profileUrl);
+    });
+
+    test('나의 멤버 정보를 가져온다: 해당하는 멤버가 없을 경우 404 NOT_FOUND', async () => {
+      // when & then
+      try {
+        await memberService.getMemberInfo(999);
+      } catch (error) {
+        expect(error).toBeInstanceOf(BaseException);
+        expect(error.httpCode).toEqual(404);
+        expect(error.name).toEqual('NOT_FOUND_EXCEPTION');
+      }
+    });
+  });
 });
