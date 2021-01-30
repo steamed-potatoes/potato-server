@@ -1,4 +1,4 @@
-import { IsString } from 'class-validator';
+import { IsOptional, IsString } from 'class-validator';
 import { Member } from '../../../domains/member/member.entity';
 
 export class CreateAccountRequest {
@@ -9,6 +9,7 @@ export class CreateAccountRequest {
   private readonly name: string;
 
   @IsString()
+  @IsOptional()
   private readonly profileUrl: string;
 
   constructor(email: string, name: string, profileUrl: string) {

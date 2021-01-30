@@ -5,6 +5,7 @@ import { Container } from 'typedi';
 import {
   useExpressServer,
   useContainer as routingUseContainer,
+  createExpressServer,
 } from 'routing-controllers';
 import createDatabaseConnection from './config/database';
 import { routingControllerOptions } from './config/routing';
@@ -35,12 +36,14 @@ export default class App {
     try {
       routingUseContainer(Container);
       useExpressServer(this.app, routingControllerOptions);
-      this.app.listen(port, () => {
+      createExpressServer({
+        defaultErrorHandler: false,
+      }).listen(port, () => {
         console.log(`
-              ################################################
-              🛡️  Server listening on port: ${port} - ${process.env.NODE_ENV}
-              ################################################
-              `);
+        ################################################
+        🛡️  Server listening on port: ${port} - ${process.env.NODE_ENV}
+        ################################################
+        `);
       });
     } catch (error) {
       console.error(error);
