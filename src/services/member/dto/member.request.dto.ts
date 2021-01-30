@@ -18,6 +18,10 @@ export class CreateAccountRequest {
     this.profileUrl = profileUrl;
   }
 
+  public static testInstance(email: string, name: string, profileUrl: string) {
+    return new CreateAccountRequest(email, name, profileUrl);
+  }
+
   public toEntity(): Member {
     return Member.newInstance(this.email, this.name, this.profileUrl);
   }
