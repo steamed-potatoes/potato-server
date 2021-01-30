@@ -1,6 +1,7 @@
 import Container from 'typedi';
 import { getConnectionOptions, createConnection, useContainer } from 'typeorm';
 import config from './index';
+import logger from 'morgan';
 
 export default async function createDatabaseConnection() {
   try {
@@ -8,6 +9,6 @@ export default async function createDatabaseConnection() {
     const connectionOptions = await getConnectionOptions(config.server.env);
     await createConnection({ ...connectionOptions, name: 'default' });
   } catch (error) {
-    console.error(error);
+    logger.error(error);
   }
 }

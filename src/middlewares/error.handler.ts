@@ -6,6 +6,7 @@ import {
 } from 'routing-controllers';
 import * as express from 'express';
 import { Service } from 'typedi';
+import logger from 'morgan';
 
 @Middleware({ type: 'after' })
 @Service()
@@ -48,7 +49,7 @@ export class CustomErrorHandler implements ExpressErrorMiddlewareInterface {
     }
 
     // TODO 로깅으로 변경
-    console.error(error);
+    logger.error(error);
     res.json(responseObject);
   }
 }
