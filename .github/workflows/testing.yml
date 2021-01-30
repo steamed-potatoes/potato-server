@@ -1,12 +1,9 @@
-name: Backend Server Deploys
+name: CI
 
 on:
   pull_request:
     branches:
       - develop
-  push:
-    branches:
-      - feature/ci
 
 jobs:
   build:
@@ -20,6 +17,12 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node-version }}
-      - run: yarn install
-      - run: yarn run build
-      - run: yarn test
+
+      - name: Install dependencies
+        run: yarn install
+
+      - name: Build test
+        run: yarn run build
+
+      - name: Jest test
+        run: yarn test
