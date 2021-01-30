@@ -14,6 +14,6 @@ export class MemberController {
     @Body() request: CreateAccountRequest
   ): Promise<ApiResponse<string>> {
     await this.memberService.createAccount(request);
-    return ApiResponse.success('OK');
+    return ApiResponse.success();
   }
 }
