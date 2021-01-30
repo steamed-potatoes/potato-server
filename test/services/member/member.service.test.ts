@@ -22,14 +22,14 @@ describe('MemberServiceTest', () => {
   });
 
   describe('createAccount()', () => {
-    test('회원가입시, 새로운 멤버가 저장된다', async () => {
+    test('회원가입시, 새로운 멤버가 저장되고 해당 멤버의 토큰을 반환한다', async () => {
       // given
       const email = 'will.seungho@gmail.com';
       const name = '강승호';
       const profileUrl = 'http://profile.com';
 
       // when
-      await memberService.createAccount(
+      const response = await memberService.createAccount(
         CreateAccountRequest.testInstance(email, name, profileUrl)
       );
 
@@ -39,6 +39,8 @@ describe('MemberServiceTest', () => {
       expect(members[0].getEmail()).toEqual(email);
       expect(members[0].getName()).toEqual(name);
       expect(members[0].getProfileUrl()).toEqual(profileUrl);
+
+      expect(response.startsWith('ey')).toBeTruthy();
     });
 
     test('회원가입시, 이미 해당하는 이메일의 멤버가 있는 경우 ConflictException이 발생한다', async () => {

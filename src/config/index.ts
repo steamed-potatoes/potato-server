@@ -18,6 +18,11 @@ const config = {
     host: process.env.DB_HOST || 'localhost',
     port: process.env.DB_PORT || 3306,
   },
+  jwt: {
+    secretKey: process.env.TOKEN_SECRET_KEY,
+    issuer: 'potato-diary',
+    expiresIn: '60m',
+  },
 };
 
 export default config;

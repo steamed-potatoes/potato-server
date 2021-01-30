@@ -13,7 +13,7 @@ export class MemberController {
   public async createAccount(
     @Body() request: CreateAccountRequest
   ): Promise<ApiResponse<string>> {
-    await this.memberService.createAccount(request);
-    return ApiResponse.success();
+    const token = await this.memberService.createAccount(request);
+    return ApiResponse.success(token);
   }
 }
