@@ -23,6 +23,11 @@ const config = {
     issuer: 'potato-diary',
     expiresIn: '60m',
   },
+  google: {
+    client_id: process.env.GOOGLE_CLIENT_ID,
+    client_secret: process.env.GOOGLE_CLIENT_SECRET,
+    grant_type: process.env.GOOGLE_GRANT_TYPE,
+  },
 };
 
 export default config;
