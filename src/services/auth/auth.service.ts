@@ -9,7 +9,7 @@ import { GoogleAuthRequest } from './dto/google.auth.request.dto';
 import { GoogleAuthResponse } from './dto/google.auth.response.dto';
 
 @Service()
-export default class AuthService {
+export class AuthService {
   constructor(
     @InjectRepository(Member)
     private readonly memberRepository: Repository<Member>,
@@ -25,15 +25,15 @@ export default class AuthService {
       request.getCode(),
       request.getRedirectUri()
     );
-    const member = await this.memberRepository.findOne({ where: { email } });
+    const member = await this.memberRepository.findOne({
+      where: { email: email },
+    });
 
     if (!member) {
-      const newMember = await this.memberRepository.save(
-        Member.newInstance(email, name, picture)
-      );
-      const token = JwtTokenUtils.encodeToken(newMember.getId());
-      return GoogleAuthResponse.signUp(token);
+      // 해당 멤버가 없을 경우, 회원가입을 위한 정보를 반환한다.
+      return GoogleAuthResponse.signUp(email, name, picture);
     }
+    // 해당 멤버가 있을 경우, 로그인 처리한다.
     const token = JwtTokenUtils.encodeToken(member.getId());
     return GoogleAuthResponse.login(token);
   }

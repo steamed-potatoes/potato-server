@@ -2,10 +2,15 @@ import { IsString } from 'class-validator';
 
 export class GoogleAuthRequest {
   @IsString()
-  private code: string;
+  private readonly code: string;
 
   @IsString()
-  private redirectUri: string;
+  private readonly redirectUri: string;
+
+  constructor(code: string, redirectUri: string) {
+    this.code = code;
+    this.redirectUri = redirectUri;
+  }
 
   public getCode(): string {
     return this.code;
