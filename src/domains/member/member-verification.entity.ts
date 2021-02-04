@@ -53,16 +53,14 @@ export class MemberVerification extends CoreEntity {
     name: string,
     majorCode: string
   ) {
-    const major = MajorType.of(majorCode);
     const salt = UuidUtils.newInstance();
-    const hashPassword = PasswordUtils.encodePassword(password, salt);
     return new MemberVerification(
       studentId,
       email,
       name,
-      hashPassword,
+      PasswordUtils.encodePassword(password, salt),
       salt,
-      major
+      MajorType.of(majorCode)
     );
   }
 

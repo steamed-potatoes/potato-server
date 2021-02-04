@@ -33,10 +33,10 @@ export class MemberController {
     return ApiResponse.success(token);
   }
 
-  @Get('/api/v1/member')
   @OpenAPI({
     security: [{ BearerAuth: [] }],
   })
+  @Get('/api/v1/member')
   public async getMemberInfo(@CurrentUser() memberId: number) {
     const response = await this.memberService.getMemberInfo(memberId);
     return ApiResponse.success(response);

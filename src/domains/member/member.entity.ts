@@ -19,7 +19,10 @@ export class Member extends CoreEntity {
   @Column()
   private name: string;
 
-  @Column()
+  @Column({
+    type: 'enum',
+    enum: Major,
+  })
   private major: Major;
 
   constructor(

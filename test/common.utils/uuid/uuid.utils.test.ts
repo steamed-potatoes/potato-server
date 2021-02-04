@@ -1,4 +1,3 @@
-import { response } from 'express';
 import { UuidUtils } from '../../../src/common/utils/uuid/uuid.utils';
 
 describe('UuidUtilsTest', () => {
