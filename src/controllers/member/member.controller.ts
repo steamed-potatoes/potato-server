@@ -25,9 +25,11 @@ export class MemberController {
     return ApiResponse.success();
   }
 
-  @Get('/api/v1/signup/verify/:id')
-  public async verifyEmail(@Param('id') verifcationId: number) {
-    const token = await this.memberService.verifyEmail(verifcationId);
+  @Get('/api/v1/signup/verify/:verificationUuid')
+  public async verifyEmail(
+    @Param('verificationUuid') verificationUuid: string
+  ) {
+    const token = await this.memberService.verifyEmail(verificationUuid);
     return ApiResponse.success(token);
   }
 

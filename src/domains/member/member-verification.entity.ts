@@ -2,10 +2,13 @@ import { Column, Entity } from 'typeorm';
 import { CoreEntity } from '@src/domains/core.entity';
 import { Major, Member } from './member.entity';
 import { PasswordUtils } from '@src/common/utils/password/password.utils';
-import { v4 as uuid } from 'uuid';
+import { UuidUtils } from '@src/common/utils/uuid/uuid.utils';
 
 @Entity()
 export class MemberVerification extends CoreEntity {
+  @Column()
+  private uuid: string;
+
   @Column()
   private studentId: number;
 
@@ -33,6 +36,7 @@ export class MemberVerification extends CoreEntity {
     major: Major
   ) {
     super();
+    this.uuid = UuidUtils.newInstance();
     this.studentId = studentId;
     this.email = email;
     this.name = name;
@@ -48,7 +52,7 @@ export class MemberVerification extends CoreEntity {
     name: string,
     major: Major
   ) {
-    const salt = uuid();
+    const salt = UuidUtils.newInstance();
     const hashPassword = PasswordUtils.encodePassword(password, salt);
     return new MemberVerification(
       studentId,
@@ -69,6 +73,10 @@ export class MemberVerification extends CoreEntity {
       this.salt,
       this.major
     );
+  }
+
+  public getUuid(): string {
+    return this.uuid;
   }
 
   public getStudentId(): number {

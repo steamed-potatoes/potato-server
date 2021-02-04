@@ -19,16 +19,16 @@ export class MemberServiceUtils {
     }
   }
 
-  public static async findMemberVerifcationById(
+  public static async findMemberVerifcationByUuid(
     memberVerificationRepository: Repository<MemberVerification>,
-    memberVerificationId: number
+    verificationUuid: string
   ) {
-    const findMemberVerifcation = await memberVerificationRepository.findOne(
-      memberVerificationId
-    );
+    const findMemberVerifcation = await memberVerificationRepository.findOne({
+      where: { uuid: verificationUuid },
+    });
     if (!findMemberVerifcation) {
       throw new NotFoundException(
-        `해당 하는 인증 메일 (${memberVerificationId})을 찾을 수 없습니다`
+        `해당 하는 인증 메일 (${verificationUuid})을 찾을 수 없습니다`
       );
     }
     return findMemberVerifcation;

@@ -26,10 +26,14 @@ export class MemberService {
     // 이메일 보내는 로직
   }
 
-  public async verifyEmail(verficationId: number): Promise<string> {
-    const memberVerification = await MemberServiceUtils.findMemberVerifcationById(
+  public async verifyEmail(verificationUuid: string): Promise<string> {
+    const memberVerification = await MemberServiceUtils.findMemberVerifcationByUuid(
       this.memberVerifcationRepository,
-      verficationId
+      verificationUuid
+    );
+    await MemberServiceUtils.validateNonExistMember(
+      this.memberRepository,
+      memberVerification.getEmail()
     );
     const member = await this.memberRepository.save(
       memberVerification.toEntity()
