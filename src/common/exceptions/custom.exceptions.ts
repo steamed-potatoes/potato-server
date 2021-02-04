@@ -2,6 +2,12 @@ import { BaseException } from '@src/common/exceptions/base.exception';
 /**
  * Custom Exception
  */
+export class ValidationException extends BaseException {
+  constructor(message: string) {
+    super(400, 'VALIDATION_EXCEPTION', message);
+  }
+}
+
 export class NotFoundException extends BaseException {
   constructor(message: string) {
     super(404, 'NOT_FOUND_EXCEPTION', message);

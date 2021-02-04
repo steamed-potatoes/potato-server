@@ -1,4 +1,5 @@
-import { Major, Member } from '@src/domains/member/member.entity';
+import { Major } from '@src/domains/member/major.type';
+import { Member } from '@src/domains/member/member.entity';
 
 export class MemberInfoResponse {
   private readonly id: number;

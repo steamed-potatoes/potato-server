@@ -1,8 +1,9 @@
 import { Column, Entity } from 'typeorm';
 import { CoreEntity } from '@src/domains/core.entity';
-import { Major, Member } from './member.entity';
+import { Member } from './member.entity';
 import { PasswordUtils } from '@src/common/utils/password/password.utils';
 import { UuidUtils } from '@src/common/utils/uuid/uuid.utils';
+import { Major, MajorType } from './major.type';
 
 @Entity()
 export class MemberVerification extends CoreEntity {
@@ -50,8 +51,9 @@ export class MemberVerification extends CoreEntity {
     email: string,
     password: string,
     name: string,
-    major: Major
+    majorCode: string
   ) {
+    const major = MajorType.of(majorCode);
     const salt = UuidUtils.newInstance();
     const hashPassword = PasswordUtils.encodePassword(password, salt);
     return new MemberVerification(

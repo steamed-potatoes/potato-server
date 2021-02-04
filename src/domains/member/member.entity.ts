@@ -1,9 +1,6 @@
 import { Column, Entity } from 'typeorm';
 import { CoreEntity } from '@src/domains/core.entity';
-
-export enum Major {
-  IT_COMPUTER_ENGINEER = 'IT학부, 컴퓨터공학과',
-}
+import { Major } from './major.type';
 
 @Entity()
 export class Member extends CoreEntity {
@@ -40,17 +37,6 @@ export class Member extends CoreEntity {
     this.password = password;
     this.salt = salt;
     this.major = major;
-  }
-
-  public static testInstance(email: string) {
-    return new Member(
-      100,
-      email,
-      'name',
-      'password',
-      'salt',
-      Major.IT_COMPUTER_ENGINEER
-    );
   }
 
   public getEmail(): string {

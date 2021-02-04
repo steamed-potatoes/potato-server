@@ -1,9 +1,8 @@
-import { IsEmail, IsEnum, IsNumber, IsString } from 'class-validator';
-import { Major } from '@src/domains/member/member.entity';
+import { IsEmail, IsInt, IsString } from 'class-validator';
 import { MemberVerification } from '@src/domains/member/member-verification.entity';
 
 export class CreateAccountRequest {
-  @IsNumber()
+  @IsInt({ message: '학번을 다시 확인해주세요.' })
   private readonly studentId: number;
 
   @IsEmail({}, { message: '이메일을 다시 확인해주세요.' })
@@ -15,21 +14,21 @@ export class CreateAccountRequest {
   @IsString({ message: '이름을 다시 확인해주세요.' })
   private readonly name: string;
 
-  @IsEnum(Major)
-  private readonly major: Major;
+  @IsString({ message: '학과를 다시 확인해주세요.' })
+  private readonly majorCode: string;
 
   constructor(
     studentId: number,
     email: string,
     password: string,
     name: string,
-    major: Major
+    majorCode: string
   ) {
     this.studentId = studentId;
     this.email = email;
     this.password = password;
     this.name = name;
-    this.major = major;
+    this.majorCode = majorCode;
   }
 
   public toEntity(): MemberVerification {
@@ -38,7 +37,7 @@ export class CreateAccountRequest {
       this.email,
       this.password,
       this.name,
-      this.major
+      this.majorCode
     );
   }
 

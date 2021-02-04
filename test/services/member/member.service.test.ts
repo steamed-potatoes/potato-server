@@ -1,10 +1,12 @@
 import { Connection, Repository } from 'typeorm';
 import setUpDatabase from '../../utils/db.connection';
-import { Major, Member } from '../../../src/domains/member/member.entity';
+import { Member } from '../../../src/domains/member/member.entity';
 import { MemberService } from '../../../src/services/member/member.service';
 import { BaseException } from '../../../src/common/exceptions/base.exception';
 import { MemberVerification } from '../../../src/domains/member/member-verification.entity';
 import { CreateAccountRequest } from '../../../src/services/member/dto/member.request.dto';
+import { MemberCreator } from '../../../src/domains/member/member.creator';
+import { Major } from '../../../src/domains/member/major.type';
 
 describe('MemberServiceTest', () => {
   let connection: Connection;
@@ -33,11 +35,11 @@ describe('MemberServiceTest', () => {
       const email = 'will.seungho@gmail.com';
       const password = 'password';
       const name = '강승호';
-      const major = Major.IT_COMPUTER_ENGINEER;
+      const majorCode = 'IT_ICT';
 
       // when
       await memberService.createAccount(
-        new CreateAccountRequest(studentId, email, password, name, major)
+        new CreateAccountRequest(studentId, email, password, name, majorCode)
       );
 
       // then
@@ -46,13 +48,13 @@ describe('MemberServiceTest', () => {
       expect(memberVerifications[0].getStudentId()).toEqual(studentId);
       expect(memberVerifications[0].getEmail()).toEqual(email);
       expect(memberVerifications[0].getName()).toEqual(name);
-      expect(memberVerifications[0].getMajor()).toEqual(major);
+      expect(memberVerifications[0].getMajor()).toEqual(Major[majorCode]);
     });
 
     test('이미 존재하는 회원이 있을경우, 회원가입 요청시 409 에러가 발생한다', async () => {
       // given
       const email = 'will.seungho@gmail.com';
-      await memberRepository.save(Member.testInstance(email));
+      await memberRepository.save(MemberCreator.testInstance(email));
 
       // when & then
       try {
@@ -81,7 +83,7 @@ describe('MemberServiceTest', () => {
       const name = '강승호';
       const major = Major.IT_COMPUTER_ENGINEER;
       await memberRepository.save(
-        new Member(studentId, email, name, 'password', 'salt', major)
+        MemberCreator.testInstance(email, studentId, name, major)
       );
 
       // when
