@@ -1,12 +1,11 @@
 import { Column, Entity } from 'typeorm';
 import { CoreEntity } from '@src/domains/core.entity';
-
-export enum Major {
-  IT_COMPUTER_ENGINEER = 'IT학부, 컴퓨터공학과',
-}
+import { Major, Member } from './member.entity';
+import { PasswordUtils } from '@src/common/utils/password/password.utils';
+import { v4 as uuid } from 'uuid';
 
 @Entity()
-export class Member extends CoreEntity {
+export class MemberVerification extends CoreEntity {
   @Column()
   private studentId: number;
 
@@ -38,19 +37,42 @@ export class Member extends CoreEntity {
     this.email = email;
     this.name = name;
     this.password = password;
-    this.salt = salt;
     this.major = major;
+    this.salt = salt;
   }
 
-  public static testInstance(email: string) {
-    return new Member(
-      100,
+  public static newInstance(
+    studentId: number,
+    email: string,
+    password: string,
+    name: string,
+    major: Major
+  ) {
+    const salt = uuid();
+    const hashPassword = PasswordUtils.encodePassword(password, salt);
+    return new MemberVerification(
+      studentId,
       email,
-      'name',
-      'password',
-      'salt',
-      Major.IT_COMPUTER_ENGINEER
+      name,
+      hashPassword,
+      salt,
+      major
     );
+  }
+
+  public toEntity(): Member {
+    return new Member(
+      this.studentId,
+      this.email,
+      this.name,
+      this.password,
+      this.salt,
+      this.major
+    );
+  }
+
+  public getStudentId(): number {
+    return this.studentId;
   }
 
   public getEmail(): string {
@@ -59,10 +81,6 @@ export class Member extends CoreEntity {
 
   public getName(): string {
     return this.name;
-  }
-
-  public getStudentId(): number {
-    return this.studentId;
   }
 
   public getMajor(): Major {

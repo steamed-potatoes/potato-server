@@ -1,30 +1,45 @@
-import { IsEmail, IsOptional, IsString, IsUrl } from 'class-validator';
-import { Member } from '@src/domains/member/member.entity';
+import { IsEmail, IsEnum, IsNumber, IsString } from 'class-validator';
+import { Major } from '@src/domains/member/member.entity';
+import { MemberVerification } from '@src/domains/member/member-verification.entity';
 
 export class CreateAccountRequest {
+  @IsNumber()
+  private readonly studentId: number;
+
   @IsEmail({}, { message: '이메일을 다시 확인해주세요.' })
   private readonly email: string;
+
+  @IsString({ message: '비밀번호를 다시 확인해주세요.' })
+  private readonly password: string;
 
   @IsString({ message: '이름을 다시 확인해주세요.' })
   private readonly name: string;
 
-  @IsOptional()
-  @IsUrl({}, { message: '프로필 사진을 다시 확인해주세요.' })
-  private readonly profileUrl: string;
+  @IsEnum(Major)
+  private readonly major: Major;
 
-  constructor(email: string, name: string, profileUrl: string) {
+  constructor(
+    studentId: number,
+    email: string,
+    password: string,
+    name: string,
+    major: Major
+  ) {
+    this.studentId = studentId;
     this.email = email;
+    this.password = password;
     this.name = name;
-    this.profileUrl = profileUrl;
+    this.major = major;
   }
 
-  // 테스트 코드에서 사용되는 정적 팩토리 메소드
-  public static testInstance(email: string, name: string, profileUrl: string) {
-    return new CreateAccountRequest(email, name, profileUrl);
-  }
-
-  public toEntity(): Member {
-    return Member.newInstance(this.email, this.name, this.profileUrl);
+  public toEntity(): MemberVerification {
+    return MemberVerification.newInstance(
+      this.studentId,
+      this.email,
+      this.password,
+      this.name,
+      this.major
+    );
   }
 
   public getEmail(): string {

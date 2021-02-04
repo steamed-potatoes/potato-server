@@ -1,20 +1,25 @@
 import { Connection, Repository } from 'typeorm';
 import setUpDatabase from '../../utils/db.connection';
-import { Member } from '../../../src/domains/member/member.entity';
+import { Major, Member } from '../../../src/domains/member/member.entity';
 import { MemberService } from '../../../src/services/member/member.service';
-import { CreateAccountRequest } from '../../../src/services/member/dto/member.request.dto';
-import { MemberCreator } from '../../../src/domains/member/member.creator';
 import { BaseException } from '../../../src/common/exceptions/base.exception';
+import { MemberVerification } from '../../../src/domains/member/member-verification.entity';
+import { CreateAccountRequest } from '../../../src/services/member/dto/member.request.dto';
 
 describe('MemberServiceTest', () => {
   let connection: Connection;
   let memberRepository: Repository<Member>;
+  let memberVerificationRepository: Repository<MemberVerification>;
   let memberService: MemberService;
 
   beforeEach(async () => {
     connection = await setUpDatabase();
     memberRepository = connection.getRepository(Member);
-    memberService = new MemberService(memberRepository);
+    memberVerificationRepository = connection.getRepository(MemberVerification);
+    memberService = new MemberService(
+      memberRepository,
+      memberVerificationRepository
+    );
   });
 
   afterEach(() => {
@@ -22,41 +27,48 @@ describe('MemberServiceTest', () => {
   });
 
   describe('createAccount()', () => {
-    test('회원가입시, 새로운 멤버가 저장되고 해당 멤버의 토큰을 반환한다', async () => {
+    test('회원가입 요청을 하면 MemberVerifcation에 정보가 임시 저장된다', async () => {
       // given
+      const studentId = 201610302;
       const email = 'will.seungho@gmail.com';
+      const password = 'password';
       const name = '강승호';
-      const profileUrl = 'http://profile.com';
+      const major = Major.IT_COMPUTER_ENGINEER;
 
       // when
-      const response = await memberService.createAccount(
-        CreateAccountRequest.testInstance(email, name, profileUrl)
+      await memberService.createAccount(
+        new CreateAccountRequest(studentId, email, password, name, major)
       );
 
       // then
-      const members = await memberRepository.find();
-      expect(members.length).toEqual(1);
-      expect(members[0].getEmail()).toEqual(email);
-      expect(members[0].getName()).toEqual(name);
-      expect(members[0].getProfileUrl()).toEqual(profileUrl);
-
-      expect(response.startsWith('ey')).toBeTruthy();
+      const memberVerifications = await memberVerificationRepository.find();
+      expect(memberVerifications.length).toEqual(1);
+      expect(memberVerifications[0].getStudentId()).toEqual(studentId);
+      expect(memberVerifications[0].getEmail()).toEqual(email);
+      expect(memberVerifications[0].getName()).toEqual(name);
+      expect(memberVerifications[0].getMajor()).toEqual(major);
     });
 
-    test('회원가입시, 이미 해당하는 이메일의 멤버가 있는 경우 ConflictException이 발생한다', async () => {
+    test('이미 존재하는 회원이 있을경우, 회원가입 요청시 409 에러가 발생한다', async () => {
       // given
       const email = 'will.seungho@gmail.com';
-      await memberRepository.save(MemberCreator.create(email));
+      await memberRepository.save(Member.testInstance(email));
 
       // when & then
       try {
         await memberService.createAccount(
-          CreateAccountRequest.testInstance(email, '강승호', null)
+          new CreateAccountRequest(
+            10000,
+            email,
+            'password',
+            '강승호',
+            Major.IT_COMPUTER_ENGINEER
+          )
         );
-      } catch (e) {
-        expect(e).toBeInstanceOf(BaseException);
-        expect(e.httpCode).toEqual(409);
-        expect(e.name).toEqual('CONFLICT_EXCEPTION');
+      } catch (error) {
+        expect(error).toBeInstanceOf(BaseException);
+        expect(error.httpCode).toEqual(409);
+        expect(error.name).toEqual('CONFLICT_EXCEPTION');
       }
     });
   });
@@ -64,11 +76,12 @@ describe('MemberServiceTest', () => {
   describe('getMemberInfo()', () => {
     test('나의 멤버 정보를 가져온다', async () => {
       // given
+      const studentId = 201610302;
       const email = 'will.seungho@gmail.com';
       const name = '강승호';
-      const profileUrl = 'http://profile.com';
+      const major = Major.IT_COMPUTER_ENGINEER;
       await memberRepository.save(
-        MemberCreator.create(email, name, profileUrl)
+        new Member(studentId, email, name, 'password', 'salt', major)
       );
 
       // when
@@ -76,9 +89,10 @@ describe('MemberServiceTest', () => {
 
       // then
       expect(response.getId()).toEqual(1);
+      expect(response.getStudentId()).toEqual(studentId);
       expect(response.getEmail()).toEqual(email);
       expect(response.getName()).toEqual(name);
-      expect(response.getProfileUrl()).toEqual(profileUrl);
+      expect(response.getMajor()).toEqual(major);
     });
 
     test('나의 멤버 정보를 가져온다: 해당하는 멤버가 없을 경우 404 NOT_FOUND', async () => {

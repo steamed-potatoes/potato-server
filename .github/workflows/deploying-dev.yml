@@ -23,10 +23,6 @@ jobs:
           envkey_DB_PORT: ${{secrets.DB_PORT}}
           envkey_DB_HOST: ${{secrets.DB_HOST}}
 
-          envkey_GOOGLE_CLIENT_ID: ${{secrets.GOOGLE_CLIENT_ID}}
-          envkey_GOOGLE_CLIENT_SECRET: ${{secrets.GOOGLE_CLIENT_SECRET}}
-          envkey_GOOGLE_GRANT_TYPE: ${{secrets.GOOGLE_GRANT_TYPE}}
-
           envkey_TOKEN_SECRET_KEY: ${{secrets.TOKEN_SECRET_KEY}}
 
           file_name: .env.prod

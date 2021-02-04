@@ -3,6 +3,7 @@ import {
   CurrentUser,
   Get,
   JsonController,
+  Param,
   Post,
 } from 'routing-controllers';
 import { Service } from 'typedi';
@@ -16,11 +17,17 @@ import { OpenAPI } from 'routing-controllers-openapi';
 export class MemberController {
   constructor(private readonly memberService: MemberService) {}
 
-  @Post('/api/v1/member')
+  @Post('/api/v1/signup')
   public async createAccount(
     @Body() request: CreateAccountRequest
   ): Promise<ApiResponse<string>> {
-    const token = await this.memberService.createAccount(request);
+    await this.memberService.createAccount(request);
+    return ApiResponse.success();
+  }
+
+  @Get('/api/v1/signup/verify/:id')
+  public async verifyEmail(@Param('id') verifcationId: number) {
+    const token = await this.memberService.verifyEmail(verifcationId);
     return ApiResponse.success(token);
   }
 

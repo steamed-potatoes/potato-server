@@ -4,6 +4,7 @@ import {
   NotFoundException,
 } from '@src/common/exceptions/custom.exceptions';
 import { Member } from '@src/domains/member/member.entity';
+import { MemberVerification } from '@src/domains/member/member-verification.entity';
 
 export class MemberServiceUtils {
   public static async validateNonExistMember(
@@ -16,6 +17,21 @@ export class MemberServiceUtils {
     if (findMember) {
       throw new ConflictException(`이미 회원가입한 멤버 (${email}) 입니다.`);
     }
+  }
+
+  public static async findMemberVerifcationById(
+    memberVerificationRepository: Repository<MemberVerification>,
+    memberVerificationId: number
+  ) {
+    const findMemberVerifcation = await memberVerificationRepository.findOne(
+      memberVerificationId
+    );
+    if (!findMemberVerifcation) {
+      throw new NotFoundException(
+        `해당 하는 인증 메일 (${memberVerificationId})을 찾을 수 없습니다`
+      );
+    }
+    return findMemberVerifcation;
   }
 
   public static async findMemberById(

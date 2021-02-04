@@ -1,5 +1,5 @@
-import { JwtTokenUtils } from '../../src/common/utils/jwt/jwt.utils';
-import { BaseException } from '../../src/common/exceptions/base.exception';
+import { JwtTokenUtils } from '../../../src/common/utils/jwt/jwt.utils';
+import { BaseException } from '../../../src/common/exceptions/base.exception';
 
 describe('JwtTokenUtilsTest', () => {
   describe('encodeToken()', () => {
