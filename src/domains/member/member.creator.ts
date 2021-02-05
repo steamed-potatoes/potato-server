@@ -1,4 +1,5 @@
 import { Major } from './major.type';
+import { MemberVerification } from './member-verification.entity';
 import { Member } from './member.entity';
 
 export class MemberCreator {
@@ -11,5 +12,25 @@ export class MemberCreator {
     salt = 'salt'
   ) {
     return new Member(studentId, email, name, password, salt, major);
+  }
+}
+
+export class MemberVerificationCreator {
+  public static testInstance(
+    studentId: number,
+    email: string,
+    name: string,
+    password: string,
+    salt: string,
+    major: Major
+  ) {
+    return new MemberVerification(
+      studentId,
+      email,
+      name,
+      password,
+      salt,
+      major
+    );
   }
 }
