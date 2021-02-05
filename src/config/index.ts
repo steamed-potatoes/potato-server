@@ -28,7 +28,7 @@ const config = {
     service: 'gmail',
     host: 'stmp.gmail.com',
     user: process.env.EMAIL_USER,
-    password: process.env.EMAIL_PASS,
+    password: process.env.EMAIL_PASSWORD,
   },
 };
 
