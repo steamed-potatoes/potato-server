@@ -4,6 +4,7 @@ import config from '@src/config';
 import Mail from 'nodemailer/lib/mailer';
 import { BadGateWayException } from '@src/common/exceptions/custom.exceptions';
 import { Service } from 'typedi';
+import ejs from 'ejs';
 
 @Service()
 export class MailSender {
@@ -22,12 +23,20 @@ export class MailSender {
     );
   }
 
-  public async sendMail(to: string, subject: string, text: string) {
+  public async sendVerifcationMail(to: string, authCode: string) {
+    const emailTemplate = await ejs.renderFile(
+      __dirname + '/resources/email.ejs',
+      { authCode: authCode }
+    );
+    await this.sendMail(to, 'Verify Email', emailTemplate);
+  }
+
+  private async sendMail(to: string, subject: string, emailTemplate: string) {
     const mailOptions = {
       from: config.mail.user,
       to: to,
       subject: subject,
-      text: text,
+      html: emailTemplate,
     };
 
     try {

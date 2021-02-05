@@ -31,3 +31,9 @@ export class BadGateWayException extends BaseException {
     super(502, 'BAD_GATEWAY_EXCEPTION', message);
   }
 }
+
+export class InternalServerException extends BaseException {
+  constructor(message: string) {
+    super(500, 'INTERNAL_SERVER_EXCEPTION', message);
+  }
+}
