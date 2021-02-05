@@ -7,6 +7,8 @@ import { MemberServiceUtils } from '@src/services/member/member.servie.utils';
 import { MemberInfoResponse } from './dto/member.response.dto';
 import { MemberVerification } from '@src/domains/member/member-verification.entity';
 import { JwtTokenUtils } from '@src/common/utils/jwt/jwt.utils';
+import { SqsSender } from '@src/externals/sqs/sqs.apicaller';
+import aws from 'aws-sdk';
 
 @Service()
 export class MemberService {
@@ -14,8 +16,11 @@ export class MemberService {
     @InjectRepository(Member)
     private readonly memberRepository: Repository<Member>,
     @InjectRepository(MemberVerification)
-    private readonly memberVerifcationRepository: Repository<MemberVerification>
-  ) {}
+    private readonly memberVerifcationRepository: Repository<MemberVerification>,
+    private readonly sqsSender: SqsSender
+  ) {
+    this.sqsSender = new SqsSender(new aws.SQS());
+  }
 
   public async createAccount(request: CreateAccountRequest): Promise<void> {
     await MemberServiceUtils.validateNonExistMember(
@@ -23,7 +28,7 @@ export class MemberService {
       request.getEmail()
     );
     await this.memberVerifcationRepository.save(request.toEntity());
-    // 이메일 보내는 로직
+    this.sqsSender.sendMessage(request.getEmail());
   }
 
   public async verifyEmail(verificationUuid: string): Promise<string> {

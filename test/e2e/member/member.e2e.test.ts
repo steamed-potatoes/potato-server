@@ -4,16 +4,39 @@ import setUpDatabase from '../../utils/db.connection';
 import { Member } from '../../../src/domains/member/member.entity';
 import app from '../../utils/test.app';
 import { MemberVerification } from '../../../src/domains/member/member-verification.entity';
+import { MemberController } from '../../../src/controllers/member/member.controller';
+import { SqsSender } from '../../../src/externals/sqs/sqs.apicaller';
+import { MemberService } from '../../../src/services/member/member.service';
+
+jest.mock('../../../src/externals/sqs/sqs.apicaller', () => {
+  return {
+    SqsSender: jest.fn().mockImplementation(() => {
+      return {
+        sendMessage: () => {
+          return 'OK';
+        },
+      };
+    }),
+  };
+});
 
 describe('MemberServiceTest', () => {
   let connection: Connection;
   let memberRepository: Repository<Member>;
   let memberVerifcationRepository: Repository<MemberVerification>;
+  let memberService: MemberService;
+  let memberController: MemberController;
 
   beforeEach(async () => {
     connection = await setUpDatabase();
     memberRepository = connection.getRepository(Member);
     memberVerifcationRepository = connection.getRepository(MemberVerification);
+    memberService = new MemberService(
+      memberRepository,
+      memberVerifcationRepository,
+      new SqsSender(null)
+    );
+    memberController = new MemberController(memberService);
   });
 
   afterEach(() => {
@@ -21,22 +44,6 @@ describe('MemberServiceTest', () => {
   });
 
   describe('POST /api/v1/member', () => {
-    test('회원가입을 성공한다 200 OK', async () => {
-      await request(app)
-        .post('/api/v1/signup')
-        .send({
-          email: 'will.seungho@gmail.com',
-          name: '강승호',
-          studentId: 201610302,
-          password: '!password1234',
-          majorCode: 'IT_ICT',
-        })
-        .expect(200);
-
-      const members = await memberVerifcationRepository.find();
-      expect(members.length).toEqual(1);
-    });
-
     test('이메일 형식이 아닐 경우 400 Bad Request', async () => {
       await request(app)
         .post('/api/v1/signup')

@@ -7,6 +7,19 @@ import { MemberVerification } from '../../../src/domains/member/member-verificat
 import { CreateAccountRequest } from '../../../src/services/member/dto/member.request.dto';
 import { MemberCreator } from '../../../src/domains/member/member.creator';
 import { Major } from '../../../src/domains/member/major.type';
+import { SqsSender } from '../../../src/externals/sqs/sqs.apicaller';
+
+jest.mock('../../../src/externals/sqs/sqs.apicaller', () => {
+  return {
+    SqsSender: jest.fn().mockImplementation(() => {
+      return {
+        sendMessage: () => {
+          return 'OK';
+        },
+      };
+    }),
+  };
+});
 
 describe('MemberServiceTest', () => {
   let connection: Connection;
@@ -20,7 +33,8 @@ describe('MemberServiceTest', () => {
     memberVerificationRepository = connection.getRepository(MemberVerification);
     memberService = new MemberService(
       memberRepository,
-      memberVerificationRepository
+      memberVerificationRepository,
+      new SqsSender(null)
     );
   });
 
