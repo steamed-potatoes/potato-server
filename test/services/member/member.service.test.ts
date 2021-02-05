@@ -4,7 +4,10 @@ import { Member } from '../../../src/domains/member/member.entity';
 import { MemberService } from '../../../src/services/member/member.service';
 import { BaseException } from '../../../src/common/exceptions/base.exception';
 import { MemberVerification } from '../../../src/domains/member/member-verification.entity';
-import { CreateAccountRequest } from '../../../src/services/member/dto/member.request.dto';
+import {
+  CreateAccountRequest,
+  MemberChangeRequest,
+} from '../../../src/services/member/dto/member.request.dto';
 import { MemberCreator } from '../../../src/domains/member/member.creator';
 import { Major } from '../../../src/domains/member/major.type';
 
@@ -106,6 +109,39 @@ describe('MemberServiceTest', () => {
         expect(error.httpCode).toEqual(404);
         expect(error.name).toEqual('NOT_FOUND_EXCEPTION');
       }
+    });
+  });
+
+  describe('getMemberChangeInfo()', () => {
+    test('나의 정보를 변경한다.', async () => {
+      //given
+      const studentId = 201610302;
+      const email = 'will.seungho@gmail.com';
+      const name = '강승호';
+      const major = Major.IT_COMPUTER_ENGINEER;
+      await memberRepository.save(
+        MemberCreator.testInstance(email, studentId, name, major)
+      );
+
+      //when
+      const updateStudentId = 201610323;
+      const updatePassword = 'password';
+      const updateName = '유순조';
+      const updateMajor = Major.IT_COMPUTER_ENGINEER;
+
+      const updateMember = await memberService.getMemberChangeInfo(
+        new MemberChangeRequest(
+          updateStudentId,
+          updatePassword,
+          updateName,
+          updateMajor
+        ),
+        1
+      );
+
+      //then
+      expect(updateMember.getStudentId()).toBe(updateStudentId);
+      expect(updateMember.getName()).toBe(updateName);
     });
   });
 });

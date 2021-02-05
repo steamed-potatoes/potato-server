@@ -57,4 +57,24 @@ export class Member extends CoreEntity {
   public getMajor(): Major {
     return this.major;
   }
+
+  public update(
+    studentId: number,
+    password: string,
+    name: string,
+    major: Major
+  ) {
+    if (studentId) {
+      this.studentId = studentId;
+    }
+    if (password) {
+      this.password = password;
+    }
+    if (name) {
+      this.name = name;
+    }
+    if (major) {
+      this.major = major;
+    }
+  }
 }
