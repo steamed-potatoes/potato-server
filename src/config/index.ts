@@ -23,6 +23,12 @@ const config = {
     issuer: 'potato-diary',
     expiresIn: '60m',
   },
+  mail: {
+    service: 'gmail',
+    host: 'stmp.gmail.com',
+    user: process.env.EMAIL_USER,
+    password: process.env.EMAIL_PASS,
+  },
 };
 
 export default config;
