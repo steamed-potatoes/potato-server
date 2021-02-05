@@ -171,4 +171,37 @@ describe('MemberServiceTest', () => {
       }
     });
   });
+
+  describe('getMemberChangeInfo()', () => {
+    test('나의 정보를 변경한다.', async () => {
+      //given
+      const studentId = 201610302;
+      const email = 'will.seungho@gmail.com';
+      const name = '강승호';
+      const major = Major.IT_COMPUTER_ENGINEER;
+      await memberRepository.save(
+        MemberCreator.testInstance(email, studentId, name, major)
+      );
+
+      //when
+      const updateStudentId = 201610323;
+      const updatePassword = 'password';
+      const updateName = '유순조';
+      const updateMajor = Major.IT_COMPUTER_ENGINEER;
+
+      const updateMember = await memberService.getMemberChangeInfo(
+        new MemberChangeRequest(
+          updateStudentId,
+          updatePassword,
+          updateName,
+          updateMajor
+        ),
+        1
+      );
+
+      //then
+      expect(updateMember.getStudentId()).toBe(updateStudentId);
+      expect(updateMember.getName()).toBe(updateName);
+    });
+  });
 });

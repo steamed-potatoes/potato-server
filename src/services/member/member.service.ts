@@ -2,9 +2,15 @@ import { Service } from 'typedi';
 import { Repository } from 'typeorm';
 import { InjectRepository } from 'typeorm-typedi-extensions';
 import { Member } from '@src/domains/member/member.entity';
-import { CreateAccountRequest } from '@src/services/member/dto/member.request.dto';
+import {
+  CreateAccountRequest,
+  MemberChangeRequest,
+} from '@src/services/member/dto/member.request.dto';
 import { MemberServiceUtils } from '@src/services/member/member.servie.utils';
-import { MemberInfoResponse } from './dto/member.response.dto';
+import {
+  MemberInfoChangeResponse,
+  MemberInfoResponse,
+} from './dto/member.response.dto';
 import { MemberVerification } from '@src/domains/member/member-verification.entity';
 import { JwtTokenUtils } from '@src/common/utils/jwt/jwt.utils';
 
@@ -47,5 +53,23 @@ export class MemberService {
       memberId
     );
     return MemberInfoResponse.of(findMember);
+  }
+
+  public async getMemberChangeInfo(
+    request: MemberChangeRequest,
+    memberId: number
+  ) {
+    const findMember = await MemberServiceUtils.findMemberById(
+      this.memberRepository,
+      memberId
+    );
+    findMember.update(
+      request.getStudentId(),
+      request.getPassword(),
+      request.getName(),
+      request.getMajor()
+    );
+    const updateMember = await this.memberRepository.save(findMember);
+    return MemberInfoChangeResponse.of(updateMember);
   }
 }
