@@ -24,6 +24,8 @@ jobs:
           envkey_DB_HOST: ${{secrets.DB_HOST}}
 
           envkey_TOKEN_SECRET_KEY: ${{secrets.TOKEN_SECRET_KEY}}
+          envkey_EMAIL_USER: ${{secrets.EMAIL_USER}}
+          envkey_EMAIL_PASSWORD: ${{secrets.EMAIL_PASSWORD}}
 
           file_name: .env.prod
 

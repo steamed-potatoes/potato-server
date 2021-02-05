@@ -1,4 +1,4 @@
-import { Service } from 'typedi';
+import { Inject, Service } from 'typedi';
 import { Repository } from 'typeorm';
 import { InjectRepository } from 'typeorm-typedi-extensions';
 import { Member } from '@src/domains/member/member.entity';
@@ -7,6 +7,7 @@ import { MemberServiceUtils } from '@src/services/member/member.servie.utils';
 import { MemberInfoResponse } from './dto/member.response.dto';
 import { MemberVerification } from '@src/domains/member/member-verification.entity';
 import { JwtTokenUtils } from '@src/common/utils/jwt/jwt.utils';
+import { MailSender } from '@src/externals/mail/mail.service';
 
 @Service()
 export class MemberService {
@@ -14,7 +15,9 @@ export class MemberService {
     @InjectRepository(Member)
     private readonly memberRepository: Repository<Member>,
     @InjectRepository(MemberVerification)
-    private readonly memberVerifcationRepository: Repository<MemberVerification>
+    private readonly memberVerifcationRepository: Repository<MemberVerification>,
+    @Inject()
+    private readonly mailSender: MailSender
   ) {}
 
   public async createAccount(request: CreateAccountRequest): Promise<void> {
@@ -22,14 +25,20 @@ export class MemberService {
       this.memberRepository,
       request.getEmail()
     );
-    await this.memberVerifcationRepository.save(request.toEntity());
-    // 이메일 보내는 로직
+    const verification = await this.memberVerifcationRepository.save(
+      request.toEntity()
+    );
+
+    this.mailSender.sendVerifcationMail(
+      request.getEmail(),
+      verification.getUuid()
+    );
   }
 
-  public async verifyEmail(verificationUuid: string): Promise<string> {
+  public async verifyEmail(autoCode: string): Promise<string> {
     const memberVerification = await MemberServiceUtils.findMemberVerifcationByUuid(
       this.memberVerifcationRepository,
-      verificationUuid
+      autoCode
     );
     await MemberServiceUtils.validateNonExistMember(
       this.memberRepository,

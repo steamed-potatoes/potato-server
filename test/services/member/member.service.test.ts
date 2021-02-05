@@ -10,6 +10,19 @@ import {
   MemberVerificationCreator,
 } from '../../../src/domains/member/member.creator';
 import { Major } from '../../../src/domains/member/major.type';
+import { MailSender } from '../../../src/externals/mail/mail.service';
+
+jest.mock('../../../src/externals/mail/mail.service', () => {
+  return {
+    MailSender: jest.fn().mockImplementation(() => {
+      return {
+        sendVerifcationMail: () => {
+          return 'OK';
+        },
+      };
+    }),
+  };
+});
 
 describe('MemberServiceTest', () => {
   let connection: Connection;
@@ -23,7 +36,8 @@ describe('MemberServiceTest', () => {
     memberVerificationRepository = connection.getRepository(MemberVerification);
     memberService = new MemberService(
       memberRepository,
-      memberVerificationRepository
+      memberVerificationRepository,
+      new MailSender()
     );
   });
 

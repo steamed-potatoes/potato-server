@@ -25,11 +25,9 @@ export class MemberController {
     return ApiResponse.success();
   }
 
-  @Get('/api/v1/signup/verify/:verificationUuid')
-  public async verifyEmail(
-    @Param('verificationUuid') verificationUuid: string
-  ) {
-    const token = await this.memberService.verifyEmail(verificationUuid);
+  @Get('/api/v1/signup/verify/:autoCode')
+  public async verifyEmail(@Param('autoCode') autoCode: string) {
+    const token = await this.memberService.verifyEmail(autoCode);
     return ApiResponse.success(token);
   }
 
