@@ -209,5 +209,23 @@ describe('MemberServiceTest', () => {
       expect(updateMember.getName()).toBe(updateName);
       expect(updateMember.getMajor()).toBe(updateMajor);
     });
+
+    test('해당하는 멤버가 없을 경우 404 NOT_FOUND', async () => {
+      try {
+        await memberService.getMemberChangeInfo(
+          new MemberChangeRequest(
+            201610323,
+            'password',
+            '유순조',
+            Major.IT_COMPUTER_ENGINEER
+          ),
+          999
+        );
+      } catch (error) {
+        expect(error).toBeInstanceOf(BaseException);
+        expect(error.httpCode).toEqual(404);
+        expect(error.name).toEqual('NOT_FOUND_EXCEPTION');
+      }
+    });
   });
 });
