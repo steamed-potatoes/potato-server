@@ -3,6 +3,7 @@ import request from 'supertest';
 import setUpDatabase from '../../utils/db.connection';
 import app from '../../utils/test.app';
 import { MemberVerification } from '../../../src/domains/member/member-verification.entity';
+import { Major } from '../../../src/domains/member/major.type';
 
 describe('MemberServiceTest', () => {
   let connection: Connection;
@@ -71,5 +72,22 @@ describe('MemberServiceTest', () => {
         .set('Authorization', 'Wrong Token')
         .expect(401);
     });
+  });
+
+  describe('Patch /api/v1/member', () => {
+    test('토큰을 넘기지 않으면 401 Unauthorized', async () => {
+      await request(app)
+        .patch('/api/v1/member')
+        .set('Authorization', '')
+        .expect(401);
+    });
+    test('잘못된 토큰을 넘기면 401 Unauthorized', async () => {
+      await request(app)
+        .patch('/api/v1/member')
+        .set('Authorization', 'Wrong Token')
+        .expect(401);
+    });
+
+    //로그인 구현되면 토큰 받고 학번이 숫자가 아닐 때 테스트해보기
   });
 });
