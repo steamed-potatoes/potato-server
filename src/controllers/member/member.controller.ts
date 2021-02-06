@@ -6,6 +6,7 @@ import {
   Param,
   Patch,
   Post,
+  Put,
 } from 'routing-controllers';
 import { Service } from 'typedi';
 import { ApiResponse } from '@src/common/dto/api.response.dto';
