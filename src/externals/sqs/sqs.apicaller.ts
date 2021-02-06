@@ -14,11 +14,14 @@ export class SqsSender {
     this.url = config.sqs.url;
   }
 
-  public sendMessage(email: string) {
+  public sendMessage(email: string, code: string) {
     this.sqs
       .sendMessage({
         QueueUrl: this.url,
-        MessageBody: email,
+        MessageBody: JSON.stringify({
+          receiver: email,
+          code: code,
+        }),
         DelaySeconds: 0,
       })
       .promise()

@@ -27,8 +27,10 @@ export class MemberService {
       this.memberRepository,
       request.getEmail()
     );
-    await this.memberVerifcationRepository.save(request.toEntity());
-    this.sqsSender.sendMessage(request.getEmail());
+    const verification = await this.memberVerifcationRepository.save(
+      request.toEntity()
+    );
+    this.sqsSender.sendMessage(request.getEmail(), verification.getUuid());
   }
 
   public async verifyEmail(verificationUuid: string): Promise<string> {
