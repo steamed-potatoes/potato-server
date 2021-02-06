@@ -4,8 +4,8 @@ import {
   Get,
   JsonController,
   Param,
+  Patch,
   Post,
-  Put,
 } from 'routing-controllers';
 import { Service } from 'typedi';
 import { ApiResponse } from '@src/common/dto/api.response.dto';
@@ -15,7 +15,7 @@ import {
 } from '@src/services/member/dto/member.request.dto';
 import { MemberService } from '@src/services/member/member.service';
 import { OpenAPI } from 'routing-controllers-openapi';
-import { MemberInfoChangeResponse } from '@src/services/member/dto/member.response.dto';
+import { MemberInfoResponse } from '@src/services/member/dto/member.response.dto';
 
 @Service()
 @JsonController()
@@ -47,11 +47,11 @@ export class MemberController {
     return ApiResponse.success(response);
   }
 
-  @Put('/api/v1/member')
+  @Patch('/api/v1/member')
   public async getMemberInfoChange(
     @Body() request: MemberChangeRequest,
     @CurrentUser() memberId: number
-  ): Promise<ApiResponse<MemberInfoChangeResponse>> {
+  ): Promise<ApiResponse<MemberInfoResponse>> {
     const response = await this.memberService.getMemberChangeInfo(
       request,
       memberId

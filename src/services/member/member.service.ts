@@ -7,10 +7,7 @@ import {
   MemberChangeRequest,
 } from '@src/services/member/dto/member.request.dto';
 import { MemberServiceUtils } from '@src/services/member/member.servie.utils';
-import {
-  MemberInfoChangeResponse,
-  MemberInfoResponse,
-} from './dto/member.response.dto';
+import { MemberInfoResponse } from './dto/member.response.dto';
 import { MemberVerification } from '@src/domains/member/member-verification.entity';
 import { JwtTokenUtils } from '@src/common/utils/jwt/jwt.utils';
 
@@ -70,6 +67,6 @@ export class MemberService {
       request.getMajor()
     );
     const updateMember = await this.memberRepository.save(findMember);
-    return MemberInfoChangeResponse.of(updateMember);
+    return MemberInfoResponse.of(updateMember);
   }
 }

@@ -1,6 +1,7 @@
 import { Column, Entity } from 'typeorm';
 import { CoreEntity } from '@src/domains/core.entity';
 import { Major } from './major.type';
+import { PasswordUtils } from '@src/common/utils/password/password.utils';
 
 @Entity()
 export class Member extends CoreEntity {
@@ -73,7 +74,8 @@ export class Member extends CoreEntity {
       this.studentId = studentId;
     }
     if (password) {
-      this.password = password;
+      const hashedPassword = PasswordUtils.encodePassword(password, this.salt);
+      this.password = hashedPassword;
     }
     if (name) {
       this.name = name;
