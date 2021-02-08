@@ -3,15 +3,14 @@ import {
   CurrentUser,
   Get,
   JsonController,
-  Param,
   Patch,
   Post,
-  Put,
 } from 'routing-controllers';
 import { Service } from 'typedi';
 import { ApiResponse } from '@src/common/dto/api.response.dto';
 import {
   CreateAccountRequest,
+  LoginAccountRequest,
   MemberChangeRequest,
 } from '@src/services/member/dto/member.request.dto';
 import { MemberService } from '@src/services/member/member.service';
@@ -31,12 +30,10 @@ export class MemberController {
     return ApiResponse.success();
   }
 
-  @Get('/api/v1/signup/verify/:verificationUuid')
-  public async verifyEmail(
-    @Param('verificationUuid') verificationUuid: string
-  ) {
-    const token = await this.memberService.verifyEmail(verificationUuid);
-    return ApiResponse.success(token);
+  @Post('/api/v1/login')
+  public async loginAccount(@Body() request: LoginAccountRequest) {
+    const response = await this.memberService.loginAccount(request);
+    return ApiResponse.success(response);
   }
 
   @OpenAPI({
@@ -48,12 +45,15 @@ export class MemberController {
     return ApiResponse.success(response);
   }
 
+  @OpenAPI({
+    security: [{ BearerAuth: [] }],
+  })
   @Patch('/api/v1/member')
-  public async getMemberInfoChange(
+  public async updateMemberInfo(
     @Body() request: MemberChangeRequest,
     @CurrentUser() memberId: number
   ): Promise<ApiResponse<MemberInfoResponse>> {
-    const response = await this.memberService.getMemberChangeInfo(
+    const response = await this.memberService.updateMemberInfo(
       request,
       memberId
     );

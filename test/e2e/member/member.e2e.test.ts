@@ -3,7 +3,6 @@ import request from 'supertest';
 import setUpDatabase from '../../utils/db.connection';
 import app from '../../utils/test.app';
 import { MemberVerification } from '../../../src/domains/member/member-verification.entity';
-import { Major } from '../../../src/domains/member/major.type';
 
 describe('MemberServiceTest', () => {
   let connection: Connection;
@@ -18,41 +17,28 @@ describe('MemberServiceTest', () => {
     connection.close();
   });
 
-  describe('POST /api/v1/member', () => {
-    test('회원가입 요청시 임시 테이블에 저장된다', async () => {
+  describe('POST /api/v1/signup', () => {
+    test('비밀번호가 8자리 보다 짧을 경우 400 에러 발생', async () => {
       await request(app)
         .post('/api/v1/signup')
         .send({
           email: 'will.seungho@gmail.com',
           name: '강승호',
           studentId: 201610302,
-          password: '!password1234',
-          majorCode: 'IT_ICT',
-        })
-        .expect(200);
-
-      const members = await memberVerifcationRepository.find();
-      expect(members.length).toEqual(1);
-    });
-
-    test('이메일 형식이 아닐 경우 400 Bad Request', async () => {
-      await request(app)
-        .post('/api/v1/signup')
-        .send({
-          email: '강승호',
-          name: '강승호',
-          studentId: 201610302,
-          password: '!password1234',
+          password: '!pass02',
           majorCode: 'IT_ICT',
         })
         .expect(400);
     });
-
-    test('이름이 입력되지 않은 경우, 400 Bad Request', async () => {
+    test('비밀번호에 특수문자가 없는 경우 400 에러 발생', async () => {
       await request(app)
         .post('/api/v1/signup')
         .send({
-          email: '강승호',
+          email: 'will.seungho@gmail.com',
+          name: '강승호',
+          studentId: 201610302,
+          password: 'password1234',
+          majorCode: 'IT_ICT',
         })
         .expect(400);
     });

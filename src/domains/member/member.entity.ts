@@ -1,7 +1,9 @@
 import { Column, Entity } from 'typeorm';
 import { CoreEntity } from '@src/domains/core.entity';
-import { Major } from './major.type';
+import { Major, MajorType } from './major.type';
 import { PasswordUtils } from '@src/common/utils/password/password.utils';
+import { UuidUtils } from '@src/common/utils/uuid/uuid.utils';
+import { ValidationException } from '@src/common/exceptions/custom.exceptions';
 
 @Entity()
 export class Member extends CoreEntity {
@@ -38,6 +40,24 @@ export class Member extends CoreEntity {
     this.password = password;
     this.salt = salt;
     this.major = major;
+  }
+
+  public static newInstance(
+    studentId: number,
+    email: string,
+    name: string,
+    password: string,
+    majorCode: string
+  ) {
+    const salt = UuidUtils.newInstance();
+    return new Member(
+      studentId,
+      email,
+      name,
+      PasswordUtils.encodePassword(password, salt),
+      salt,
+      MajorType.of(majorCode)
+    );
   }
 
   public getEmail(): string {
@@ -82,6 +102,14 @@ export class Member extends CoreEntity {
     }
     if (major) {
       this.major = major;
+    }
+  }
+
+  public async checkPassword(password: string) {
+    try {
+      PasswordUtils.comparePassword(this.password, this.salt, password);
+    } catch (error) {
+      throw new ValidationException('일치하는 멤버가 존재하지 않습니다.');
     }
   }
 }

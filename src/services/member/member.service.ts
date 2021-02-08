@@ -4,46 +4,35 @@ import { InjectRepository } from 'typeorm-typedi-extensions';
 import { Member } from '@src/domains/member/member.entity';
 import {
   CreateAccountRequest,
+  LoginAccountRequest,
   MemberChangeRequest,
 } from '@src/services/member/dto/member.request.dto';
-import { MemberServiceUtils } from '@src/services/member/member.servie.utils';
-import {
-  MemberInfoChangeResponse,
-  MemberInfoResponse,
-} from './dto/member.response.dto';
-import { MemberVerification } from '@src/domains/member/member-verification.entity';
+import { MemberServiceUtils } from '@src/services/member/member.service.utils';
+import { MemberInfoResponse } from './dto/member.response.dto';
 import { JwtTokenUtils } from '@src/common/utils/jwt/jwt.utils';
 
 @Service()
 export class MemberService {
   constructor(
     @InjectRepository(Member)
-    private readonly memberRepository: Repository<Member>,
-    @InjectRepository(MemberVerification)
-    private readonly memberVerifcationRepository: Repository<MemberVerification>
+    private readonly memberRepository: Repository<Member>
   ) {}
 
-  public async createAccount(request: CreateAccountRequest): Promise<void> {
+  public async createAccount(request: CreateAccountRequest): Promise<string> {
     await MemberServiceUtils.validateNonExistMember(
       this.memberRepository,
       request.getEmail()
     );
-    await this.memberVerifcationRepository.save(request.toEntity());
-    // 이메일 보내는 로직
+    const member = await this.memberRepository.save(request.toMember());
+    return JwtTokenUtils.encodeToken(member.getId());
   }
 
-  public async verifyEmail(verificationUuid: string): Promise<string> {
-    const memberVerification = await MemberServiceUtils.findMemberVerifcationByUuid(
-      this.memberVerifcationRepository,
-      verificationUuid
-    );
-    await MemberServiceUtils.validateNonExistMember(
+  public async loginAccount(request: LoginAccountRequest) {
+    const member = await MemberServiceUtils.findMemberByEmail(
       this.memberRepository,
-      memberVerification.getEmail()
+      request.getEmail()
     );
-    const member = await this.memberRepository.save(
-      memberVerification.toEntity()
-    );
+    await member.checkPassword(request.getPassword());
     return JwtTokenUtils.encodeToken(member.getId());
   }
 
@@ -55,10 +44,10 @@ export class MemberService {
     return MemberInfoResponse.of(findMember);
   }
 
-  public async getMemberChangeInfo(
+  public async updateMemberInfo(
     request: MemberChangeRequest,
     memberId: number
-  ) {
+  ): Promise<MemberInfoResponse> {
     const findMember = await MemberServiceUtils.findMemberById(
       this.memberRepository,
       memberId

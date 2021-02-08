@@ -1,6 +1,7 @@
-import { IsEmail, IsInt, IsString } from 'class-validator';
+import { IsEmail, IsInt, IsString, Matches } from 'class-validator';
 import { MemberVerification } from '@src/domains/member/member-verification.entity';
 import { Major } from '@src/domains/member/major.type';
+import { Member } from '@src/domains/member/member.entity';
 
 export class CreateAccountRequest {
   @IsInt({ message: '학번을 다시 확인해주세요.' })
@@ -9,6 +10,9 @@ export class CreateAccountRequest {
   @IsEmail({}, { message: '이메일을 다시 확인해주세요.' })
   private readonly email: string;
 
+  @Matches(/^(?=.*[a-zA-Z])(?=.*[!@#$%^*+=-])(?=.*[0-9]).{8,25}$/, {
+    message: '비밀번호는 8자이상의 숫자+영문자+특수문자의 조합이어야 합니다',
+  })
   @IsString({ message: '비밀번호를 다시 확인해주세요.' })
   private readonly password: string;
 
@@ -38,6 +42,16 @@ export class CreateAccountRequest {
       this.email,
       this.password,
       this.name,
+      this.majorCode
+    );
+  }
+
+  public toMember(): Member {
+    return Member.newInstance(
+      this.studentId,
+      this.email,
+      this.name,
+      this.password,
       this.majorCode
     );
   }
@@ -81,5 +95,26 @@ export class MemberChangeRequest {
 
   public getMajor() {
     return this.major;
+  }
+}
+
+export class LoginAccountRequest {
+  @IsEmail({}, { message: '이메일을 다시 확인해주세요.' })
+  private readonly email: string;
+
+  @IsString({ message: '비밀번호를 다시 확인해주세요.' })
+  private readonly password: string;
+
+  constructor(email: string, password: string) {
+    this.email = email;
+    this.password = password;
+  }
+
+  public getEmail(): string {
+    return this.email;
+  }
+
+  public getPassword(): string {
+    return this.password;
   }
 }

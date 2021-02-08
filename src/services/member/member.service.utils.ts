@@ -46,4 +46,19 @@ export class MemberServiceUtils {
     }
     return findMember;
   }
+
+  public static async findMemberByEmail(
+    memberRepository: Repository<Member>,
+    email: string
+  ) {
+    const findMember = await memberRepository.findOne({
+      where: { email: email },
+    });
+    if (!findMember) {
+      throw new NotFoundException(
+        `해당 (${email})를 가진 멤버는 존재하지 않습니다.`
+      );
+    }
+    return findMember;
+  }
 }
