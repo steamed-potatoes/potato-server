@@ -1,18 +1,16 @@
 import { Connection, Repository } from 'typeorm';
 import request from 'supertest';
 import setUpDatabase from '../../utils/db.connection';
-import { Member } from '../../../src/domains/member/member.entity';
 import app from '../../utils/test.app';
 import { MemberVerification } from '../../../src/domains/member/member-verification.entity';
+import { Major } from '../../../src/domains/member/major.type';
 
 describe('MemberServiceTest', () => {
   let connection: Connection;
-  let memberRepository: Repository<Member>;
   let memberVerifcationRepository: Repository<MemberVerification>;
 
   beforeEach(async () => {
     connection = await setUpDatabase();
-    memberRepository = connection.getRepository(Member);
     memberVerifcationRepository = connection.getRepository(MemberVerification);
   });
 
@@ -21,7 +19,7 @@ describe('MemberServiceTest', () => {
   });
 
   describe('POST /api/v1/member', () => {
-    test('회원가입을 성공한다 200 OK', async () => {
+    test('회원가입 요청시 임시 테이블에 저장된다', async () => {
       await request(app)
         .post('/api/v1/signup')
         .send({
@@ -74,5 +72,22 @@ describe('MemberServiceTest', () => {
         .set('Authorization', 'Wrong Token')
         .expect(401);
     });
+  });
+
+  describe('Patch /api/v1/member', () => {
+    test('토큰을 넘기지 않으면 401 Unauthorized', async () => {
+      await request(app)
+        .patch('/api/v1/member')
+        .set('Authorization', '')
+        .expect(401);
+    });
+    test('잘못된 토큰을 넘기면 401 Unauthorized', async () => {
+      await request(app)
+        .patch('/api/v1/member')
+        .set('Authorization', 'Wrong Token')
+        .expect(401);
+    });
+
+    //로그인 구현되면 토큰 받고 학번이 숫자가 아닐 때 테스트해보기
   });
 });

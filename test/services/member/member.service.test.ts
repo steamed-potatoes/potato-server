@@ -4,9 +4,16 @@ import { Member } from '../../../src/domains/member/member.entity';
 import { MemberService } from '../../../src/services/member/member.service';
 import { BaseException } from '../../../src/common/exceptions/base.exception';
 import { MemberVerification } from '../../../src/domains/member/member-verification.entity';
-import { CreateAccountRequest } from '../../../src/services/member/dto/member.request.dto';
-import { MemberCreator } from '../../../src/domains/member/member.creator';
+import {
+  CreateAccountRequest,
+  MemberChangeRequest,
+} from '../../../src/services/member/dto/member.request.dto';
+import {
+  MemberCreator,
+  MemberVerificationCreator,
+} from '../../../src/domains/member/member.creator';
 import { Major } from '../../../src/domains/member/major.type';
+import { PasswordUtils } from '../../../src/common/utils/password/password.utils';
 
 describe('MemberServiceTest', () => {
   let connection: Connection;
@@ -75,6 +82,66 @@ describe('MemberServiceTest', () => {
     });
   });
 
+  describe('verifyEmail()', () => {
+    test('이메일 인증 성공시 회원가입이 완료된다', async () => {
+      // given
+      const memberVerification = await memberVerificationRepository.save(
+        MemberVerificationCreator.testInstance(
+          201610302,
+          'will.seungho@gmail.com',
+          '강승호',
+          'password',
+          'salt',
+          Major.IT_COMPUTER_ENGINEER
+        )
+      );
+
+      // when
+      await memberService.verifyEmail(memberVerification.getUuid());
+
+      // then
+      const members = await memberRepository.find();
+      expect(members.length).toEqual(1);
+      expect(members[0].getEmail()).toEqual(memberVerification.getEmail());
+      expect(members[0].getName()).toEqual(memberVerification.getName());
+      expect(members[0].getStudentId()).toEqual(
+        memberVerification.getStudentId()
+      );
+      expect(members[0].getPassword()).toEqual(
+        memberVerification.getPassword()
+      );
+      expect(members[0].getSalt()).toEqual(memberVerification.getSalt());
+      expect(members[0].getMajor()).toEqual(memberVerification.getMajor());
+    });
+
+    test('이메일 인증시, 이미 회원가입된 유저면 409 에러 발생', async () => {
+      // given
+      await memberRepository.save(
+        MemberCreator.testInstance('will.seungho@gmail.com')
+      );
+
+      const memberVerification = await memberVerificationRepository.save(
+        MemberVerificationCreator.testInstance(
+          201610302,
+          'will.seungho@gmail.com',
+          '강승호',
+          'password',
+          'salt',
+          Major.IT_COMPUTER_ENGINEER
+        )
+      );
+
+      // when & then
+      try {
+        await memberService.verifyEmail(memberVerification.getUuid());
+      } catch (error) {
+        expect(error).toBeInstanceOf(BaseException);
+        expect(error.httpCode).toEqual(409);
+        expect(error.name).toEqual('CONFLICT_EXCEPTION');
+      }
+    });
+  });
+
   describe('getMemberInfo()', () => {
     test('나의 멤버 정보를 가져온다', async () => {
       // given
@@ -101,6 +168,59 @@ describe('MemberServiceTest', () => {
       // when & then
       try {
         await memberService.getMemberInfo(999);
+      } catch (error) {
+        expect(error).toBeInstanceOf(BaseException);
+        expect(error.httpCode).toEqual(404);
+        expect(error.name).toEqual('NOT_FOUND_EXCEPTION');
+      }
+    });
+  });
+
+  describe('getMemberChangeInfo()', () => {
+    test('나의 정보를 변경한다.', async () => {
+      //given
+      await memberRepository.save(
+        MemberCreator.testInstance(
+          'will.seungho@gmail.com',
+          201610302,
+          '강승호',
+          Major.IT_COMPUTER_ENGINEER
+        )
+      );
+
+      //when
+      const updateStudentId = 201610323;
+      const updatePassword = 'password';
+      const updateName = '유순조';
+      const updateMajor = Major.IT_COMPUTER_ENGINEER;
+
+      const updateMember = await memberService.getMemberChangeInfo(
+        new MemberChangeRequest(
+          updateStudentId,
+          updatePassword,
+          updateName,
+          updateMajor
+        ),
+        1
+      );
+
+      //then
+      expect(updateMember.getStudentId()).toBe(updateStudentId);
+      expect(updateMember.getName()).toBe(updateName);
+      expect(updateMember.getMajor()).toBe(updateMajor);
+    });
+
+    test('해당하는 멤버가 없을 경우 404 NOT_FOUND', async () => {
+      try {
+        await memberService.getMemberChangeInfo(
+          new MemberChangeRequest(
+            201610323,
+            'password',
+            '유순조',
+            Major.IT_COMPUTER_ENGINEER
+          ),
+          999
+        );
       } catch (error) {
         expect(error).toBeInstanceOf(BaseException);
         expect(error.httpCode).toEqual(404);

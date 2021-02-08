@@ -94,4 +94,12 @@ export class MemberVerification extends CoreEntity {
   public getMajor(): Major {
     return this.major;
   }
+
+  public getPassword(): string {
+    return this.password;
+  }
+
+  public getSalt(): string {
+    return this.salt;
+  }
 }
