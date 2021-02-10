@@ -47,7 +47,7 @@ export class CreateAccountRequest {
   }
 
   public toMember(): Member {
-    return Member.newInstance(
+    return Member.newLocalInstance(
       this.studentId,
       this.email,
       this.name,
@@ -61,7 +61,7 @@ export class CreateAccountRequest {
   }
 }
 
-export class MemberChangeRequest {
+export class UpdateMemberRequest {
   @IsInt({ message: '학번을 다시 확인해주세요.' })
   private readonly studentId: number;
 

@@ -11,7 +11,7 @@ import { ApiResponse } from '@src/common/dto/api.response.dto';
 import {
   CreateAccountRequest,
   LoginAccountRequest,
-  MemberChangeRequest,
+  UpdateMemberRequest,
 } from '@src/services/member/dto/member.request.dto';
 import { MemberService } from '@src/services/member/member.service';
 import { OpenAPI } from 'routing-controllers-openapi';
@@ -26,14 +26,14 @@ export class MemberController {
   public async createAccount(
     @Body() request: CreateAccountRequest
   ): Promise<ApiResponse<string>> {
-    await this.memberService.createAccount(request);
-    return ApiResponse.success();
+    const token = await this.memberService.signUpLocal(request);
+    return ApiResponse.success(token);
   }
 
   @Post('/api/v1/login')
   public async loginAccount(@Body() request: LoginAccountRequest) {
-    const response = await this.memberService.loginAccount(request);
-    return ApiResponse.success(response);
+    const token = await this.memberService.loginLocal(request);
+    return ApiResponse.success(token);
   }
 
   @OpenAPI({
@@ -50,7 +50,7 @@ export class MemberController {
   })
   @Patch('/api/v1/member')
   public async updateMemberInfo(
-    @Body() request: MemberChangeRequest,
+    @Body() request: UpdateMemberRequest,
     @CurrentUser() memberId: number
   ): Promise<ApiResponse<MemberInfoResponse>> {
     const response = await this.memberService.updateMemberInfo(

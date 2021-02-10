@@ -5,7 +5,7 @@ import { Member } from '@src/domains/member/member.entity';
 import {
   CreateAccountRequest,
   LoginAccountRequest,
-  MemberChangeRequest,
+  UpdateMemberRequest,
 } from '@src/services/member/dto/member.request.dto';
 import { MemberServiceUtils } from '@src/services/member/member.service.utils';
 import { MemberInfoResponse } from './dto/member.response.dto';
@@ -18,7 +18,7 @@ export class MemberService {
     private readonly memberRepository: Repository<Member>
   ) {}
 
-  public async createAccount(request: CreateAccountRequest): Promise<string> {
+  public async signUpLocal(request: CreateAccountRequest): Promise<string> {
     await MemberServiceUtils.validateNonExistMember(
       this.memberRepository,
       request.getEmail()
@@ -27,7 +27,7 @@ export class MemberService {
     return JwtTokenUtils.encodeToken(member.getId());
   }
 
-  public async loginAccount(request: LoginAccountRequest) {
+  public async loginLocal(request: LoginAccountRequest) {
     const member = await MemberServiceUtils.findMemberByEmail(
       this.memberRepository,
       request.getEmail()
@@ -45,7 +45,7 @@ export class MemberService {
   }
 
   public async updateMemberInfo(
-    request: MemberChangeRequest,
+    request: UpdateMemberRequest,
     memberId: number
   ): Promise<MemberInfoResponse> {
     const findMember = await MemberServiceUtils.findMemberById(

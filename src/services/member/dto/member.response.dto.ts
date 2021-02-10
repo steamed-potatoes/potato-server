@@ -1,5 +1,5 @@
 import { Major } from '@src/domains/member/major.type';
-import { Member } from '@src/domains/member/member.entity';
+import { Member, Provider } from '@src/domains/member/member.entity';
 
 export class MemberInfoResponse {
   private readonly id: number;
@@ -7,19 +7,22 @@ export class MemberInfoResponse {
   private readonly email: string;
   private readonly name: string;
   private readonly major: Major;
+  private readonly provider: Provider;
 
   constructor(
     id: number,
     studentId: number,
     email: string,
     name: string,
-    major: Major
+    major: Major,
+    provider: Provider
   ) {
     this.id = id;
     this.studentId = studentId;
     this.email = email;
     this.name = name;
     this.major = major;
+    this.provider = provider;
   }
 
   public static of(member: Member): MemberInfoResponse {
@@ -28,7 +31,8 @@ export class MemberInfoResponse {
       member.getStudentId(),
       member.getEmail(),
       member.getName(),
-      member.getMajor()
+      member.getMajor(),
+      member.getProvider()
     );
   }
 
@@ -50,5 +54,9 @@ export class MemberInfoResponse {
 
   public getMajor(): Major {
     return this.major;
+  }
+
+  public getProvider(): Provider {
+    return this.provider;
   }
 }

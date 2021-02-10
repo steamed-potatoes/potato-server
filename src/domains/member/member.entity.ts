@@ -5,6 +5,10 @@ import { PasswordUtils } from '@src/common/utils/password/password.utils';
 import { UuidUtils } from '@src/common/utils/uuid/uuid.utils';
 import { ValidationException } from '@src/common/exceptions/custom.exceptions';
 
+export enum Provider {
+  LOCAL = 'LOCAL',
+}
+
 @Entity()
 export class Member extends CoreEntity {
   @Column()
@@ -25,13 +29,17 @@ export class Member extends CoreEntity {
   @Column()
   private major: Major;
 
+  @Column()
+  private provider: Provider;
+
   constructor(
     studentId: number,
     email: string,
     name: string,
     password: string,
     salt: string,
-    major: Major
+    major: Major,
+    provider: Provider
   ) {
     super();
     this.studentId = studentId;
@@ -40,9 +48,10 @@ export class Member extends CoreEntity {
     this.password = password;
     this.salt = salt;
     this.major = major;
+    this.provider = provider;
   }
 
-  public static newInstance(
+  public static newLocalInstance(
     studentId: number,
     email: string,
     name: string,
@@ -56,8 +65,30 @@ export class Member extends CoreEntity {
       name,
       PasswordUtils.encodePassword(password, salt),
       salt,
-      MajorType.of(majorCode)
+      MajorType.of(majorCode),
+      Provider.LOCAL
     );
+  }
+
+  public update(
+    studentId: number,
+    password: string,
+    name: string,
+    major: Major
+  ) {
+    this.studentId = studentId || this.studentId;
+    this.password =
+      PasswordUtils.encodePassword(password, this.salt) || this.password;
+    this.name = name || this.name;
+    this.major = major || this.major;
+  }
+
+  public async checkPassword(password: string) {
+    try {
+      PasswordUtils.comparePassword(this.password, this.salt, password);
+    } catch (error) {
+      throw new ValidationException('일치하는 멤버가 존재하지 않습니다.');
+    }
   }
 
   public getEmail(): string {
@@ -83,33 +114,7 @@ export class Member extends CoreEntity {
   public getSalt(): string {
     return this.salt;
   }
-
-  public update(
-    studentId: number,
-    password: string,
-    name: string,
-    major: Major
-  ) {
-    if (studentId) {
-      this.studentId = studentId;
-    }
-    if (password) {
-      const hashedPassword = PasswordUtils.encodePassword(password, this.salt);
-      this.password = hashedPassword;
-    }
-    if (name) {
-      this.name = name;
-    }
-    if (major) {
-      this.major = major;
-    }
-  }
-
-  public async checkPassword(password: string) {
-    try {
-      PasswordUtils.comparePassword(this.password, this.salt, password);
-    } catch (error) {
-      throw new ValidationException('일치하는 멤버가 존재하지 않습니다.');
-    }
+  public getProvider(): Provider {
+    return this.provider;
   }
 }

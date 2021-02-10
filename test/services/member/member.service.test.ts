@@ -1,12 +1,12 @@
 import { Connection, Repository } from 'typeorm';
 import setUpDatabase from '../../utils/db.connection';
-import { Member } from '../../../src/domains/member/member.entity';
+import { Member, Provider } from '../../../src/domains/member/member.entity';
 import { MemberService } from '../../../src/services/member/member.service';
 import { BaseException } from '../../../src/common/exceptions/base.exception';
 import {
   CreateAccountRequest,
   LoginAccountRequest,
-  MemberChangeRequest,
+  UpdateMemberRequest,
 } from '../../../src/services/member/dto/member.request.dto';
 import { MemberCreator } from '../../../src/domains/member/member.creator';
 import { Major, MajorType } from '../../../src/domains/member/major.type';
@@ -37,7 +37,7 @@ describe('MemberServiceTest', () => {
       const majorCode = 'IT_ICT';
 
       // when
-      await memberService.createAccount(
+      await memberService.signUpLocal(
         new CreateAccountRequest(studentId, email, password, name, majorCode)
       );
 
@@ -48,6 +48,7 @@ describe('MemberServiceTest', () => {
       expect(members[0].getEmail()).toEqual(email);
       expect(members[0].getName()).toEqual(name);
       expect(members[0].getMajor()).toEqual(MajorType.of(majorCode));
+      expect(members[0].getProvider()).toEqual(Provider.LOCAL);
     });
 
     test('회원가입 요청시 이미 존재하는 이메일인 경우', async () => {
@@ -62,7 +63,7 @@ describe('MemberServiceTest', () => {
 
       // when & then
       try {
-        await memberService.createAccount(
+        await memberService.signUpLocal(
           new CreateAccountRequest(studentId, email, password, name, majorCode)
         );
       } catch (error) {
@@ -74,7 +75,7 @@ describe('MemberServiceTest', () => {
 
     test('회원가입 성공시 토큰을 반환한다', async () => {
       // when
-      const response = await memberService.createAccount(
+      const response = await memberService.signUpLocal(
         new CreateAccountRequest(
           201610302,
           'will.seungho@gmail.com',
@@ -107,14 +108,40 @@ describe('MemberServiceTest', () => {
         )
       );
 
-      // wehn
-      const response = await memberService.loginAccount(
+      // when
+      const response = await memberService.loginLocal(
         new LoginAccountRequest(email, password)
       );
 
       // then
       expect(response).not.toBeNull();
       expect(response.startsWith('ey')).toBeTruthy();
+    });
+
+    test('비밀번호가 일치하지 않으먼 에러발생', async () => {
+      // given
+      const email = 'will.seungho@gmail.com';
+
+      await memberRepository.save(
+        MemberCreator.testInstance(
+          email,
+          201610302,
+          '강승호',
+          Major.IT_COMPUTER_ENGINEER,
+          PasswordUtils.encodePassword('password', 'salt'),
+          'salt'
+        )
+      );
+
+      try {
+        await memberService.loginLocal(
+          new LoginAccountRequest(email, 'Wrong password')
+        );
+      } catch (error) {
+        expect(error).toBeInstanceOf(BaseException);
+        expect(error.httpCode).toEqual(400);
+        expect(error.name).toEqual('VALIDATION_EXCEPTION');
+      }
     });
   });
 
@@ -138,6 +165,7 @@ describe('MemberServiceTest', () => {
       expect(response.getEmail()).toEqual(email);
       expect(response.getName()).toEqual(name);
       expect(response.getMajor()).toEqual(major);
+      expect(response.getProvider()).toEqual(Provider.LOCAL);
     });
 
     test('나의 멤버 정보를 가져온다: 해당하는 멤버가 없을 경우 404 NOT_FOUND', async () => {
@@ -171,7 +199,7 @@ describe('MemberServiceTest', () => {
       const updateMajor = Major.IT_COMPUTER_ENGINEER;
 
       const updateMember = await memberService.updateMemberInfo(
-        new MemberChangeRequest(
+        new UpdateMemberRequest(
           updateStudentId,
           updatePassword,
           updateName,
@@ -189,7 +217,7 @@ describe('MemberServiceTest', () => {
     test('해당하는 멤버가 없을 경우 404 NOT_FOUND', async () => {
       try {
         await memberService.updateMemberInfo(
-          new MemberChangeRequest(
+          new UpdateMemberRequest(
             201610323,
             'password',
             '유순조',

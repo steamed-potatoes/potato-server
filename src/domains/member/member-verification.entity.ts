@@ -1,6 +1,6 @@
 import { Column, Entity } from 'typeorm';
 import { CoreEntity } from '@src/domains/core.entity';
-import { Member } from './member.entity';
+import { Member, Provider } from './member.entity';
 import { PasswordUtils } from '@src/common/utils/password/password.utils';
 import { UuidUtils } from '@src/common/utils/uuid/uuid.utils';
 import { Major, MajorType } from './major.type';
@@ -71,7 +71,8 @@ export class MemberVerification extends CoreEntity {
       this.name,
       this.password,
       this.salt,
-      this.major
+      this.major,
+      Provider.LOCAL
     );
   }
 
