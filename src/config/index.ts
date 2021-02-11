@@ -23,6 +23,14 @@ const config = {
     issuer: 'potato-diary',
     expiresIn: '60m',
   },
+  aws: {
+    region: 'ap-northeast-2',
+    accessKey: process.env.AWS_ACCESS_KEY_ID,
+    secretKey: process.env.AWS_SECRET_KEY,
+  },
+  sqs: {
+    url: process.env.SQS_QUEUE_URL,
+  },
 };
 
 export default config;

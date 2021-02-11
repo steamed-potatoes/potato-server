@@ -25,6 +25,10 @@ jobs:
 
           envkey_TOKEN_SECRET_KEY: ${{secrets.TOKEN_SECRET_KEY}}
 
+          AWS_ACCESS_KEY_ID: ${{secrets.AWS_ACCESS_KEY_ID}}
+          AWS_SECRET_KEY: ${{secrets.AWS_SECRET_KEY}}
+          SQS_QUEUE_URL: ${{secrets.SQS_QUEUE_URL}}
+
           file_name: .env.prod
 
       - name: Get Semantic Versioning

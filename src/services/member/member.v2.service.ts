@@ -1,4 +1,4 @@
-import { Service } from 'typedi';
+import { Inject, Service } from 'typedi';
 import { Repository } from 'typeorm';
 import { InjectRepository } from 'typeorm-typedi-extensions';
 import { Member } from '@src/domains/member/member.entity';
@@ -6,6 +6,7 @@ import { CreateAccountRequest } from '@src/services/member/dto/member.request.dt
 import { MemberServiceUtils } from '@src/services/member/member.service.utils';
 import { MemberVerification } from '@src/domains/member/member-verification.entity';
 import { JwtTokenUtils } from '@src/common/utils/jwt/jwt.utils';
+import { SqsService } from '@src/externals/sqs/sqs.external';
 
 @Service()
 export class MemberV2Service {
@@ -13,7 +14,9 @@ export class MemberV2Service {
     @InjectRepository(Member)
     private readonly memberRepository: Repository<Member>,
     @InjectRepository(MemberVerification)
-    private readonly memberVerifcationRepository: Repository<MemberVerification>
+    private readonly memberVerifcationRepository: Repository<MemberVerification>,
+    @Inject()
+    private readonly sqsService: SqsService
   ) {}
 
   public async createAccount(request: CreateAccountRequest): Promise<void> {
@@ -21,7 +24,11 @@ export class MemberV2Service {
       this.memberRepository,
       request.getEmail()
     );
-    await this.memberVerifcationRepository.save(request.toEntity());
+    const verification = await this.memberVerifcationRepository.save(
+      request.toEntity()
+    );
+    this.sqsService.sendMessage(request.getEmail(), verification.getUuid());
+
     // 이메일 보내는 로직
   }
 
