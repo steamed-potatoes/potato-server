@@ -11,7 +11,7 @@ export default [
     database: config.database.database,
     entities: ['./src/domains/*/*.entity{.ts,.js}'],
     synchronize: true,
-    logging: false,
+    logging: true,
   },
   {
     name: 'prod',

@@ -26,7 +26,7 @@ export class Member extends CoreEntity {
   @Column()
   private name: string;
 
-  @Column()
+  @Column({ nullable: true })
   private major: Major;
 
   @Column()
@@ -65,7 +65,7 @@ export class Member extends CoreEntity {
       name,
       PasswordUtils.encodePassword(password, salt),
       salt,
-      MajorType.of(majorCode),
+      majorCode == null ? null : MajorType.of(majorCode),
       Provider.LOCAL
     );
   }

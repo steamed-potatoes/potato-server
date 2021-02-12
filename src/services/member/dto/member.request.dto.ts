@@ -1,4 +1,4 @@
-import { IsEmail, IsInt, IsString, Matches } from 'class-validator';
+import { IsEmail, IsInt, IsOptional, IsString, Matches } from 'class-validator';
 import { MemberVerification } from '@src/domains/member/member-verification.entity';
 import { Major } from '@src/domains/member/major.type';
 import { Member } from '@src/domains/member/member.entity';
@@ -19,6 +19,7 @@ export class CreateAccountRequest {
   @IsString({ message: '이름을 다시 확인해주세요.' })
   private readonly name: string;
 
+  @IsOptional()
   @IsString({ message: '학과를 다시 확인해주세요.' })
   private readonly majorCode: string;
 
