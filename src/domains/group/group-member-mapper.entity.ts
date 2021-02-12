@@ -1,10 +1,10 @@
 import { Column, Entity, ManyToOne } from 'typeorm';
 import { CoreEntity } from '../core.entity';
-import { Group } from '../group/group.entity';
+import { Group } from './group.entity';
 
 export enum RoleType {
-  ADMIN = 'admin',
-  PUBLIC = 'public',
+  ADMIN = 'ADMIN',
+  USER = 'USER',
 }
 
 @Entity()

@@ -1,6 +1,6 @@
 import { Column, Entity, OneToMany } from 'typeorm';
 import { CoreEntity } from '../core.entity';
-import { GroupMemberMapper } from '../group-member-mapper/group_member.entity';
+import { GroupMemberMapper } from './group-member-mapper.entity';
 import { GroupCategory } from './group-category.type';
 
 @Entity()
@@ -12,13 +12,13 @@ export class Group extends CoreEntity {
   private description: string;
 
   @Column()
-  private member_count: number = 0;
+  private membersCount: number;
 
   @Column()
-  private group_category: GroupCategory;
+  private groupCategory: GroupCategory;
 
   @Column({ nullable: true })
-  private profile_url: string;
+  private profileUrl: string;
 
   @OneToMany(
     () => GroupMemberMapper,
@@ -29,14 +29,15 @@ export class Group extends CoreEntity {
   constructor(
     name: string,
     description: string,
-    group_category: GroupCategory,
-    profile_url: string
+    groupCategory: GroupCategory,
+    profileUrl: string
   ) {
     super();
     this.name = name;
     this.description = description;
-    this.group_category = group_category;
-    this.profile_url = profile_url;
+    this.groupCategory = groupCategory;
+    this.profileUrl = profileUrl;
+    this.membersCount = 0;
   }
 
   public getName(): string {
@@ -48,15 +49,15 @@ export class Group extends CoreEntity {
   }
 
   public getMemberCount(): number {
-    return this.member_count;
+    return this.membersCount;
   }
 
   public getGroupCategory(): GroupCategory {
-    return this.group_category;
+    return this.groupCategory;
   }
 
   public getProfileUrl(): string {
-    return this.profile_url;
+    return this.profileUrl;
   }
 
   public getGroupMemberMapping() {
