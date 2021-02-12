@@ -1,7 +1,7 @@
 import { Column, Entity, OneToMany } from 'typeorm';
 import { CoreEntity } from '../core.entity';
 import { GroupMemberMapper } from './group-member-mapper.entity';
-import { GroupCategory } from './group-category.type';
+import { GroupCategory, GroupCategoryType } from './group-category.type';
 
 @Entity()
 export class Group extends CoreEntity {
@@ -62,5 +62,19 @@ export class Group extends CoreEntity {
 
   public getGroupMemberMapping() {
     return this.groupMemberMapper;
+  }
+
+  public static of(
+    name: string,
+    description: string,
+    groupCategoryType: string,
+    profileUrl: string
+  ) {
+    return new Group(
+      name,
+      description,
+      GroupCategoryType.of(groupCategoryType),
+      profileUrl
+    );
   }
 }
