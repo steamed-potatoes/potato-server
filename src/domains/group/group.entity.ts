@@ -15,53 +15,32 @@ export class Group extends CoreEntity {
   private membersCount: number;
 
   @Column()
-  private groupCategory: GroupCategory;
+  private category: GroupCategory;
 
   @Column({ nullable: true })
   private profileUrl: string;
 
   @OneToMany(
-    () => GroupMemberMapper,
-    (groupMemberMapper) => groupMemberMapper.getGroup
+    (type) => GroupMemberMapper,
+    (groupMemberMapper) => groupMemberMapper.group,
+    {
+      cascade: true,
+    }
   )
-  private groupMemberMapper: GroupMemberMapper[];
+  groupMemberMappers: GroupMemberMapper[];
 
   constructor(
     name: string,
     description: string,
-    groupCategory: GroupCategory,
+    category: GroupCategory,
     profileUrl: string
   ) {
     super();
     this.name = name;
     this.description = description;
-    this.groupCategory = groupCategory;
+    this.category = category;
     this.profileUrl = profileUrl;
     this.membersCount = 0;
-  }
-
-  public getName(): string {
-    return this.name;
-  }
-
-  public getDescription(): string {
-    return this.description;
-  }
-
-  public getMemberCount(): number {
-    return this.membersCount;
-  }
-
-  public getGroupCategory(): GroupCategory {
-    return this.groupCategory;
-  }
-
-  public getProfileUrl(): string {
-    return this.profileUrl;
-  }
-
-  public getGroupMemberMapping() {
-    return this.groupMemberMapper;
   }
 
   public static of(
@@ -76,5 +55,34 @@ export class Group extends CoreEntity {
       GroupCategoryType.of(groupCategoryType),
       profileUrl
     );
+  }
+
+  public addAdmin(memberId: number): void {
+    if (this.groupMemberMappers) {
+      this.groupMemberMappers.push(GroupMemberMapper.newAdmin(this, memberId));
+    } else {
+      this.groupMemberMappers = [GroupMemberMapper.newAdmin(this, memberId)];
+    }
+    this.membersCount++;
+  }
+
+  public getName(): string {
+    return this.name;
+  }
+
+  public getDescription(): string {
+    return this.description;
+  }
+
+  public getMemberCount(): number {
+    return this.membersCount;
+  }
+
+  public getCategory(): GroupCategory {
+    return this.category;
+  }
+
+  public getProfileUrl(): string {
+    return this.profileUrl;
   }
 }

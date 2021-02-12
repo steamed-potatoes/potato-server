@@ -1,6 +1,5 @@
-import { Column, Entity, ManyToOne } from 'typeorm';
+import { Column, Entity, JoinColumn, JoinTable, ManyToOne } from 'typeorm';
 import { CoreEntity } from '../core.entity';
-import { RoleType } from './group-role.type';
 import { Group } from './group.entity';
 
 export enum Role {
@@ -9,35 +8,39 @@ export enum Role {
 }
 
 @Entity()
-export class GroupMemberMapper {
-  @Column()
-  private type: Role;
+export class GroupMemberMapper extends CoreEntity {
+  @JoinColumn()
+  @ManyToOne((type) => Group, (group) => group.groupMemberMappers, {
+    onDelete: 'CASCADE',
+  })
+  group: Group;
 
   @Column()
   private memberId: number;
 
-  @ManyToOne(() => Group, (group) => group.getGroupMemberMapping)
-  private group: number;
+  @Column()
+  private role: Role;
 
-  constructor(type: Role, memberId: number, group: number) {
-    this.type = type;
-    this.memberId = memberId;
+  constructor(group: Group, memberId: number, role: Role) {
+    super();
     this.group = group;
+    this.memberId = memberId;
+    this.role = role;
   }
 
-  public getType() {
-    return this.type;
+  public static newAdmin(group: Group, memberId: number): GroupMemberMapper {
+    return new GroupMemberMapper(group, memberId, Role.ADMIN);
+  }
+
+  public static newUser(group: Group, memberId: number): GroupMemberMapper {
+    return new GroupMemberMapper(group, memberId, Role.USER);
+  }
+
+  public getRole(): Role {
+    return this.role;
   }
 
   public getMemberId() {
     return this.memberId;
-  }
-
-  public getGroup() {
-    return this.group;
-  }
-
-  public static of(roleType: string, memberId: number, group: number) {
-    return new GroupMemberMapper(RoleType.of(roleType), memberId, group);
   }
 }
