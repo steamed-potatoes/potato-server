@@ -1,25 +1,25 @@
 import { BaseException } from '../../../src/common/exceptions/base.exception';
 import {
-  GroupCategory,
-  GroupCategoryType,
-} from '../../../src/domains/group/group-category.type';
+  OrganizationCategory,
+  OrganizationCategoryType,
+} from '../../../src/domains/organization/organization-category.type';
 
-describe('GroupCategoryType', () => {
+describe('OrganizationCategoryType', () => {
   test('정상적인 그룹 카테고리일 경우', () => {
     //given
-    const groupCategoryType = 'FOUR_ORGANIZATION';
+    const categoryType = 'FOUR_ORGANIZATION';
 
     //when
-    const groupCategory = GroupCategoryType.of(groupCategoryType);
+    const category = OrganizationCategoryType.of(categoryType);
 
     //then
-    expect(groupCategory).toEqual(GroupCategory.FOUR_ORGANIZATION);
+    expect(category).toEqual(OrganizationCategory.FOUR_ORGANIZATION);
   });
   test('잘못된 그룹 카테고리일 경우', () => {
-    const groupCategoryType = 'WROGN';
+    const categoryType = 'WROGN';
 
     try {
-      GroupCategoryType.of(groupCategoryType);
+      OrganizationCategoryType.of(categoryType);
     } catch (error) {
       expect(error).toBeInstanceOf(BaseException);
       expect(error.httpCode).toEqual(400);

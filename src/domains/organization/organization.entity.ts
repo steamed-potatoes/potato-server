@@ -1,10 +1,13 @@
 import { Column, Entity, OneToMany } from 'typeorm';
 import { CoreEntity } from '../core.entity';
-import { GroupMemberMapper } from './group-member-mapper.entity';
-import { GroupCategory, GroupCategoryType } from './group-category.type';
+import { OrganizationMemberMapper } from './organization-member-mapper.entity';
+import {
+  OrganizationCategory,
+  OrganizationCategoryType,
+} from './organization-category.type';
 
 @Entity()
-export class Group extends CoreEntity {
+export class Organization extends CoreEntity {
   @Column()
   private name: string;
 
@@ -15,24 +18,24 @@ export class Group extends CoreEntity {
   private membersCount: number;
 
   @Column()
-  private category: GroupCategory;
+  private category: OrganizationCategory;
 
   @Column({ nullable: true })
   private profileUrl: string;
 
   @OneToMany(
-    (type) => GroupMemberMapper,
-    (groupMemberMapper) => groupMemberMapper.group,
+    (type) => OrganizationMemberMapper,
+    (mapper) => mapper.organization,
     {
       cascade: true,
     }
   )
-  groupMemberMappers: GroupMemberMapper[];
+  organizationMemberMappers: OrganizationMemberMapper[];
 
   constructor(
     name: string,
     description: string,
-    category: GroupCategory,
+    category: OrganizationCategory,
     profileUrl: string
   ) {
     super();
@@ -46,22 +49,26 @@ export class Group extends CoreEntity {
   public static of(
     name: string,
     description: string,
-    groupCategoryType: string,
+    category: string,
     profileUrl: string
   ) {
-    return new Group(
+    return new Organization(
       name,
       description,
-      GroupCategoryType.of(groupCategoryType),
+      OrganizationCategoryType.of(category),
       profileUrl
     );
   }
 
   public addAdmin(memberId: number): void {
-    if (this.groupMemberMappers) {
-      this.groupMemberMappers.push(GroupMemberMapper.newAdmin(this, memberId));
+    if (this.organizationMemberMappers) {
+      this.organizationMemberMappers.push(
+        OrganizationMemberMapper.newAdmin(this, memberId)
+      );
     } else {
-      this.groupMemberMappers = [GroupMemberMapper.newAdmin(this, memberId)];
+      this.organizationMemberMappers = [
+        OrganizationMemberMapper.newAdmin(this, memberId),
+      ];
     }
     this.membersCount++;
   }
@@ -78,7 +85,7 @@ export class Group extends CoreEntity {
     return this.membersCount;
   }
 
-  public getCategory(): GroupCategory {
+  public getCategory(): OrganizationCategory {
     return this.category;
   }
 

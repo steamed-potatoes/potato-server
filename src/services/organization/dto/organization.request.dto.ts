@@ -1,15 +1,15 @@
-import { Group } from '@src/domains/group/group.entity';
+import { Organization } from '@src/domains/organization/organization.entity';
 import { IsString } from 'class-validator';
 
-export class CreateGroupRequest {
-  @IsString({ message: '그룹이름을 다시 확인해주세요' })
+export class CreateOrganizationRequest {
+  @IsString({ message: '그룹 이름을 다시 확인해주세요' })
   private readonly name: string;
 
-  @IsString({ message: '그룹설명을 다시 확인해주세요' })
+  @IsString({ message: '그룹 설명을 다시 확인해주세요' })
   private readonly description: string;
 
   @IsString({ message: '그룹 카테고리를 다시 확인해주세요' })
-  private readonly groupCategoryType: string;
+  private readonly category: string;
 
   @IsString({ message: '프로필을 다시 확인해주세요' })
   private readonly profileUrl: string;
@@ -17,20 +17,20 @@ export class CreateGroupRequest {
   constructor(
     name: string,
     description: string,
-    groupCategoryType: string,
+    category: string,
     profileUrl: string
   ) {
     this.name = name;
     this.description = description;
-    this.groupCategoryType = groupCategoryType;
+    this.category = category;
     this.profileUrl = profileUrl;
   }
 
-  public toGroupEntity() {
-    return Group.of(
+  public toEntity() {
+    return Organization.of(
       this.name,
       this.description,
-      this.groupCategoryType,
+      this.category,
       this.profileUrl
     );
   }
@@ -43,8 +43,8 @@ export class CreateGroupRequest {
     return this.description;
   }
 
-  public getGroupCategoryType(): string {
-    return this.groupCategoryType;
+  public getCategory(): string {
+    return this.category;
   }
 
   public getProfileUrl(): string {

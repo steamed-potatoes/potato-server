@@ -1,6 +1,6 @@
-import { Group } from '@src/domains/group/group.entity';
+import { Organization } from '@src/domains/organization/organization.entity';
 
-export class GroupInfoResponse {
+export class OrganizationInfoResponse {
   private readonly id: number;
   private readonly name: string;
   private readonly description: string;
@@ -21,13 +21,13 @@ export class GroupInfoResponse {
     this.membersCount = membersCount;
   }
 
-  public static of(group: Group) {
-    return new GroupInfoResponse(
-      group.getId(),
-      group.getName(),
-      group.getDescription(),
-      group.getProfileUrl(),
-      group.getMemberCount()
+  public static of(organization: Organization) {
+    return new OrganizationInfoResponse(
+      organization.getId(),
+      organization.getName(),
+      organization.getDescription(),
+      organization.getProfileUrl(),
+      organization.getMemberCount()
     );
   }
 }
