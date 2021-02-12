@@ -1,9 +1,9 @@
-import { NotFoundException } from '@src/common/exceptions/custom.exceptions';
-import { Group } from '@src/domains/group/group.entity';
+import { ConflictException } from '@src/common/exceptions/custom.exceptions';
+import { Group } from '@src/domains/meet/group.entity';
 import { Repository } from 'typeorm';
 
 export class GroupServiceUtils {
-  public static async findGroupName(
+  public static async validateNonExistGroup(
     groupRepository: Repository<Group>,
     name: string
   ) {
@@ -11,7 +11,7 @@ export class GroupServiceUtils {
       where: { name: name },
     });
     if (group) {
-      throw new NotFoundException('이미 존재하는 이름입니다.');
+      throw new ConflictException('이미 존재하는 이름입니다.');
     }
   }
 }

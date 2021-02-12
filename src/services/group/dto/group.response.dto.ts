@@ -1,37 +1,33 @@
-import {
-  GroupMemberMapper,
-  Role,
-} from '@src/domains/group/group-member-mapper.entity';
-import { Group } from '@src/domains/group/group.entity';
+import { Group } from '@src/domains/meet/group.entity';
 
-export class CreateGroupResponse {
+export class GroupInfoResponse {
   private readonly id: number;
   private readonly name: string;
   private readonly description: string;
   private readonly profileUrl: string;
-  private readonly type: Role;
+  private readonly membersCount: number;
 
   constructor(
     id: number,
     name: string,
     description: string,
     profileUrl: string,
-    type: Role
+    membersCount: number
   ) {
     this.id = id;
     this.name = name;
     this.description = description;
     this.profileUrl = profileUrl;
-    this.type = type;
+    this.membersCount = membersCount;
   }
 
-  public static of(group: Group, groupMemberMapper: GroupMemberMapper) {
-    return new CreateGroupResponse(
+  public static of(group: Group) {
+    return new GroupInfoResponse(
       group.getId(),
       group.getName(),
       group.getDescription(),
       group.getProfileUrl(),
-      groupMemberMapper.getType()
+      group.getMemberCount()
     );
   }
 }
