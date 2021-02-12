@@ -1,4 +1,4 @@
-import { Group } from '@src/domains/meet/group.entity';
+import { Group } from '@src/domains/group/group.entity';
 import { Service } from 'typedi';
 import { Repository } from 'typeorm';
 import { InjectRepository } from 'typeorm-typedi-extensions';

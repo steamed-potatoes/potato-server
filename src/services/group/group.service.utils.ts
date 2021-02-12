@@ -1,5 +1,5 @@
 import { ConflictException } from '@src/common/exceptions/custom.exceptions';
-import { Group } from '@src/domains/meet/group.entity';
+import { Group } from '@src/domains/group/group.entity';
 import { Repository } from 'typeorm';
 
 export class GroupServiceUtils {

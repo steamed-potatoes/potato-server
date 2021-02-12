@@ -1,4 +1,4 @@
-import { Group } from '@src/domains/meet/group.entity';
+import { Group } from '@src/domains/group/group.entity';
 import { IsString } from 'class-validator';
 
 export class CreateGroupRequest {

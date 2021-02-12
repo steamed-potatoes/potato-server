@@ -1,4 +1,4 @@
-import { Group } from '@src/domains/meet/group.entity';
+import { Group } from '@src/domains/group/group.entity';
 
 export class GroupInfoResponse {
   private readonly id: number;

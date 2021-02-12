@@ -10,7 +10,7 @@ export enum Role {
 @Entity()
 export class GroupMemberMapper extends CoreEntity {
   @JoinColumn()
-  @ManyToOne(() => Group, (group) => group.groupMemberMappers, {
+  @ManyToOne((type) => Group, (group) => group.groupMemberMappers, {
     onDelete: 'CASCADE',
   })
   group: Group;

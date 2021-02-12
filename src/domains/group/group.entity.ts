@@ -21,7 +21,7 @@ export class Group extends CoreEntity {
   private profileUrl: string;
 
   @OneToMany(
-    () => GroupMemberMapper,
+    (type) => GroupMemberMapper,
     (groupMemberMapper) => groupMemberMapper.group,
     {
       cascade: true,
@@ -58,7 +58,11 @@ export class Group extends CoreEntity {
   }
 
   public addAdmin(memberId: number): void {
-    this.groupMemberMappers = [GroupMemberMapper.newAdmin(this, memberId)];
+    if (this.groupMemberMappers) {
+      this.groupMemberMappers.push(GroupMemberMapper.newAdmin(this, memberId));
+    } else {
+      this.groupMemberMappers = [GroupMemberMapper.newAdmin(this, memberId)];
+    }
     this.membersCount++;
   }
 
