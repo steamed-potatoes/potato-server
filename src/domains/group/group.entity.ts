@@ -12,7 +12,7 @@ export class Group extends CoreEntity {
   private description: string;
 
   @Column()
-  private member_count: number;
+  private member_count: number = 0;
 
   @Column()
   private group_category: GroupCategory;
