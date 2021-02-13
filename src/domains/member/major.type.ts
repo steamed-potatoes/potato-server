@@ -3,6 +3,7 @@ import { ValidationException } from '@src/common/exceptions/custom.exceptions';
 export enum Major {
   IT_COMPUTER_ENGINEER = 'IT학부, 컴퓨터공학과',
   IT_ICT = 'IT학부, ICT융합학과',
+  MUSIC = '예술학부, 관현악과, 성악과, 피아노과',
 }
 
 export class MajorType {

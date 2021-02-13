@@ -8,7 +8,7 @@ import {
   UpdateMemberRequest,
 } from '@src/services/member/dto/member.request.dto';
 import { MemberServiceUtils } from '@src/services/member/member.service.utils';
-import { MemberInfoResponse } from './dto/member.response.dto';
+import { FindMemberInfo, MemberInfoResponse } from './dto/member.response.dto';
 import { JwtTokenUtils } from '@src/common/utils/jwt/jwt.utils';
 
 @Service()
@@ -60,5 +60,10 @@ export class MemberService {
     );
     const updateMember = await this.memberRepository.save(findMember);
     return MemberInfoResponse.of(updateMember);
+  }
+
+  public async findMemberInfo(id: number) {
+    const findMember = await this.memberRepository.findOne(id);
+    return FindMemberInfo.of(findMember);
   }
 }
