@@ -73,6 +73,19 @@ export class Organization extends CoreEntity {
     this.membersCount++;
   }
 
+  public addUser(memberId: number) {
+    if (this.organizationMemberMappers) {
+      this.organizationMemberMappers.push(
+        OrganizationMemberMapper.newUser(this, memberId)
+      );
+    } else {
+      this.organizationMemberMappers = [
+        OrganizationMemberMapper.newUser(this, memberId),
+      ];
+    }
+    this.membersCount++;
+  }
+
   public getName(): string {
     return this.name;
   }
