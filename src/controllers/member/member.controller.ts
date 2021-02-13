@@ -3,6 +3,7 @@ import {
   CurrentUser,
   Get,
   JsonController,
+  Param,
   Patch,
   Post,
 } from 'routing-controllers';
@@ -57,6 +58,18 @@ export class MemberController {
       request,
       memberId
     );
+    return ApiResponse.success(response);
+  }
+
+  @OpenAPI({
+    security: [{ BearerAuth: [] }],
+  })
+  @Get('/api/v1/member/:id')
+  public async findMemberInfo(
+    @Param('id') id: number,
+    @CurrentUser() memberId: number
+  ) {
+    const response = await this.memberService.findMemberInfo(id);
     return ApiResponse.success(response);
   }
 }
