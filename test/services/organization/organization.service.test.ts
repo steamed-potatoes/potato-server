@@ -92,4 +92,26 @@ describe('MemberServiceTest', () => {
       expect(organizationMembers[0].getRole()).toEqual(Role.ADMIN);
     });
   });
+
+  describe('registerOrganizationMember()', () => {
+    test('그룹 가입하기', async () => {
+      //given
+      const memberId = 2;
+      const organization = await organizationRepository.save([
+        Organization.of('감자', '스터디', 'APPROVE_GROUP', 'profile'),
+      ]);
+
+      //when
+      await organizationService.registerOrganizationMember(
+        organization[0].getId(),
+        memberId
+      );
+
+      //then
+      const organizationMember = await organizationMemberMapperRepository.find();
+      expect(organizationMember.length).toEqual(1);
+      expect(organizationMember[0].getMemberId()).toEqual(memberId);
+      expect(organizationMember[0].getRole()).toEqual(Role.USER);
+    });
+  });
 });
