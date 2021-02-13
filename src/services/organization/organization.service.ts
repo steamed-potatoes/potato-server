@@ -26,4 +26,16 @@ export class OrganizationService {
     await this.organizationRepository.save(newOrganization);
     return OrganizationInfoResponse.of(newOrganization);
   }
+
+  public async registerOrganizationMember(
+    organizationId: number,
+    memberId: number
+  ) {
+    const organization = await OrganizationServiceUtils.validateExistOrganization(
+      this.organizationRepository,
+      organizationId
+    );
+    organization.addUser(memberId);
+    await this.organizationRepository.save(organization);
+  }
 }
