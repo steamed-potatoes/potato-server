@@ -113,5 +113,17 @@ describe('MemberServiceTest', () => {
       expect(organizationMember[0].getMemberId()).toEqual(memberId);
       expect(organizationMember[0].getRole()).toEqual(Role.USER);
     });
+
+    test('가입하려는 그룹이 없을 경우 404 NOT_FOUND 애러가 난다.', async () => {
+      const memberId = 2;
+
+      //when
+      try {
+        await organizationService.registerOrganizationMember(1, memberId);
+      } catch (error) {
+        expect(error).toBeInstanceOf(BaseException);
+        expect(error.httpCode).toEqual(404);
+      }
+    });
   });
 });
